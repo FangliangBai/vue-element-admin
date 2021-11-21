@@ -129,6 +129,103 @@ export const constantRoutes = [
  * the routes that need to be dynamically loaded based on user roles
  */
 export const asyncRoutes = [
+
+  /**
+   * Example Routes
+   */
+  {
+    path: '/book',
+    name: 'book',
+    component: Layout,
+    redirect: '/book/create',
+    meta: { title: '图书管理', icon: 'documentation' },
+    children: [
+      {
+        path: '/book/create',
+        name: 'bookCreate',
+        component: () => import('@/views/book/create'),
+        meta: { title: '添加图书', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        path: '/book/manage',
+        name: 'bookManage',
+        component: () => import('@/views/book/manage'),
+        meta: { title: '管理图书', icon: 'edit', roles: ['admin'] }
+      }
+    ]
+  },
+
+  /**
+   * AutoCC Routes
+   */
+  /**
+   * 洗车机管理
+   */
+  {
+    name: 'machine',
+    path: '/machine',
+    component: Layout,
+    redirect: '/machine/create',
+    meta: { title: '洗车机管理', icon: 'documentation' },
+    children: [
+      {
+        name: 'CreateMachine',
+        path: '/machine/create',
+        component: () => import('@/views/machine/create'),
+        meta: { title: '新增洗车机', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'EditMachine',
+        path: '/machine/edit/:machine_uid',
+        component: () => import('@/views/machine/edit'),
+        hidden: true,
+        meta: { title: '洗车机更新', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'MachineList',
+        path: '/machine/list',
+        component: () => import('@/views/machine/list'),
+        meta: { title: '洗车机列表', icon: 'list', roles: ['admin'] }
+      }
+    ]
+  },
+
+  /**
+   * 洗车网点管理
+   */
+  {
+    name: 'branch',
+    path: '/branch',
+    component: Layout,
+    redirect: '/branch/create',
+    meta: { title: '网点管理', icon: 'documentation' },
+    children: [
+      {
+        name: 'CreateBranch',
+        path: '/branch/create',
+        component: () => import('@/views/branch/create'),
+        meta: { title: '新增网点', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'EditBranch',
+        path: '/branch/edit/:branch_uid',
+        component: () => import('@/views/branch/edit'),
+        hidden: true,
+        meta: { title: '网点更新', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'BranchList',
+        path: '/branch/list',
+        component: () => import('@/views/branch/list'),
+        meta: { title: '网点列表', icon: 'list', roles: ['admin'] }
+      }
+    ]
+  },
+
+  /**
+   * Default Routes
+   */
+
   {
     path: '/permission',
     component: Layout,
