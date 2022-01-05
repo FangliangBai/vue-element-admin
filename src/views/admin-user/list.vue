@@ -3,28 +3,10 @@
     <!-- 顶部搜索条件 -->
     <div class="filter-container">
       <el-input
-        v-model="listQuery.branch_uid"
+        v-model="listQuery.username"
         clearable
-        placeholder="网点编号"
+        placeholder="管理员名称"
         style="width: 200px;"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.zip_code"
-        clearable
-        placeholder="邮编"
-        style="width: 200px; margin-left: 10px"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.city_code"
-        clearable
-        placeholder="区号"
-        style="width: 200px; margin-left: 10px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
         @clear="handleFilter"
@@ -51,7 +33,7 @@
     <!-- 搜索结果列表 -->
     <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
       <template v-for="(item, index) in tableHead">
-        <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
+        <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" :formatter="tableColumnFormatter" />
       </template>
       <template v-if="show_action">
         <el-table-column label="操作" width="120" align="center" fixed="right">
@@ -68,11 +50,11 @@
 </template>
 
 <script>
-import { listBranch, deleteBranch } from '@/api/branch'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+import { listAdminUser, deleteAdminUser } from '@/api/user'
 
 export default {
-  name: 'BranchList',
+  name: 'AdminUserList',
   components: { Pagination },
   filters: {},
   data() {
@@ -82,18 +64,14 @@ export default {
       total: 0,
       listLoading: true,
       listQuery: {},
-      // 表头数据
       tableHead: [
-        { field_name: 'branch_uid', label: '网点编号' },
-        { field_name: 'branch_name', label: '网点名称' },
-        { field_name: 'longitude', label: '经度' },
-        { field_name: 'latitude', label: '纬度' },
-        { field_name: 'zip_code', label: '邮编' },
-        { field_name: 'city_code', label: '区号' },
-        { field_name: 'address', label: '详细地址' },
-        { field_name: 'manager_name', label: '负责人' }
+        { field_name: 'admin_id', label: '编号' },
+        { field_name: 'username', label: '管理员' },
+        { field_name: 'password', label: '密码' },
+        { field_name: 'admin_role', label: '权限' },
+        { field_name: 'admin_status', label: '状态' }
       ],
-      show_action: true // 显示操作列
+      show_action: true
     }
   },
   created() {
@@ -132,13 +110,13 @@ export default {
     },
     refresh() {
       this.$router.push({
-        path: '/branch/list',
+        path: '/admin-user/list',
         query: this.listQuery
       })
     },
     getList() {
       this.listLoading = true
-      listBranch(this.listQuery).then(response => {
+      listAdminUser(this.listQuery).then(response => {
         const {
           data,
           total
@@ -156,15 +134,15 @@ export default {
       window.location.reload()
     },
     handleUpdate(row) {
-      this.$router.push(`/branch/edit/${row.branch_uid}`)
+      this.$router.push(`/admin-user/edit/${row.admin_id}`)
     },
     handleDelete(row) {
-      this.$confirm('此操作将永久删除该网点, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该管理员, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteBranch(row.branch_uid).then(response => {
+        deleteAdminUser(row.admin_id).then(response => {
           this.$notify({
             title: '成功',
             message: response.msg || '删除成功',
@@ -175,11 +153,33 @@ export default {
         })
       })
     },
-    /**
-     * 处理 新增操作 的函数
-     */
+    // 处理 新增操作 的函数
     handleCreate() {
-      this.$router.push(`/branch/create`)
+      this.$router.push(`/admin-user/create`)
+    },
+    // 表格内容替换
+    tableColumnFormatter(row, column) {
+      switch (column.property) {
+        case 'admin_status':
+          switch (row.admin_status) {
+            case 1:
+              return '活跃'
+            case 2:
+              return '禁用'
+          }
+          break
+        case 'admin_role':
+          switch (row.admin_role) {
+            case 'admin':
+              return '管理人员'
+            case 'editor':
+              return '工作人员'
+          }
+          break
+        default:
+          // 返回其他不需要处理的正常参数
+          return row[column.property]
+      }
     }
   }
 }

@@ -6,7 +6,7 @@
 import BranchDetail from './components/BranchDetail'
 
 export default {
-  name: 'CreateBranch',
+  name: 'CreateBranch', // TODO: 这个名字错了，应该是 EditBranch 回头改一下
   components: { BranchDetail }
 }
 </script>

@@ -145,7 +145,8 @@ aside {
   text-align: right;
   padding-right: 20px;
   transition: 600ms ease position;
-  background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
+  //background: linear-gradient(90deg, rgba(32, 182, 249, 1) 0%, rgba(32, 182, 249, 1) 0%, rgba(33, 120, 241, 1) 100%, rgba(33, 120, 241, 1) 100%);
+  background: rgb(61, 141, 218);
 
   .subtitle {
     font-size: 20px;
@@ -173,11 +174,11 @@ aside {
 
 .filter-container {
   padding-bottom: 10px;
-
   .filter-item {
     display: inline-block;
     vertical-align: middle;
     margin-bottom: 10px;
+    margin-left: 10px;
   }
 }
 

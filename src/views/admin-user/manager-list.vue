@@ -3,27 +3,18 @@
     <!-- 顶部搜索条件 -->
     <div class="filter-container">
       <el-input
-        v-model="listQuery.branch_uid"
+        v-model="listQuery.manager_name"
         clearable
-        placeholder="网点编号"
+        placeholder="名称"
         style="width: 200px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
         @clear="handleFilter"
       />
       <el-input
-        v-model="listQuery.zip_code"
+        v-model="listQuery.manager_phone"
         clearable
-        placeholder="邮编"
-        style="width: 200px; margin-left: 10px"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.city_code"
-        clearable
-        placeholder="区号"
+        placeholder="手机号"
         style="width: 200px; margin-left: 10px"
         class="filter-item"
         @keyup.enter.native="handleFilter"
@@ -50,29 +41,45 @@
     </div>
     <!-- 搜索结果列表 -->
     <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
-      <template v-for="(item, index) in tableHead">
-        <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
-      </template>
-      <template v-if="show_action">
-        <el-table-column label="操作" width="120" align="center" fixed="right">
-          <template slot-scope="{ row }">
-            <el-button type="text" icon="el-icon-edit" @click="handleUpdate(row)" />
-            <el-button type="text" icon="el-icon-delete" style="margin-left:20px; color:#f56c6c" @click="handleDelete(row)" />
-          </template>
-        </el-table-column>
-      </template>
+      <el-table-column align="center" label="编号">
+        <template slot-scope="scope">
+          <span>{{ scope.row.manager_uid }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="姓名">
+        <template slot-scope="scope">
+          <span>{{ scope.row.manager_name }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="联系电话">
+        <template slot-scope="scope">
+          <span>{{ scope.row.manager_phone }}</span>
+        </template>
+      </el-table-column>
+      <el-table-column align="center" label="操作" fixed="right">
+        <template slot-scope="{ row }">
+          <el-button type="text" icon="el-icon-edit" @click="handleUpdate(row)" />
+          <el-button type="text" icon="el-icon-delete" style="margin-left:20px; color:#f56c6c" @click="handleDelete(row)" />
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页组件 -->
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageSize" @pagination="refresh" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.pageSize"
+      @pagination="refresh"
+    />
   </div>
 </template>
 
 <script>
-import { listBranch, deleteBranch } from '@/api/branch'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { listManager, deleteManager } from '@/api/user'
+import Pagination from '@/components/Pagination'
 
 export default {
-  name: 'BranchList',
+  name: 'ManagerList',
   components: { Pagination },
   filters: {},
   data() {
@@ -81,19 +88,7 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      listQuery: {},
-      // 表头数据
-      tableHead: [
-        { field_name: 'branch_uid', label: '网点编号' },
-        { field_name: 'branch_name', label: '网点名称' },
-        { field_name: 'longitude', label: '经度' },
-        { field_name: 'latitude', label: '纬度' },
-        { field_name: 'zip_code', label: '邮编' },
-        { field_name: 'city_code', label: '区号' },
-        { field_name: 'address', label: '详细地址' },
-        { field_name: 'manager_name', label: '负责人' }
-      ],
-      show_action: true // 显示操作列
+      listQuery: {}
     }
   },
   created() {
@@ -113,13 +108,15 @@ export default {
     next()
   },
   methods: {
+    /**
+     * 初始化查询条件对象
+      */
     parseQuery() {
-      // 收集查询条件
-      const query = Object.assign({}, this.$route.query)
       let listQuery = {
         page: 1,
         pageSize: 20
       }
+      const query = Object.assign({}, this.$route.query)
       if (query) {
         query.page && (query.page = Number(query.page))
         query.pageSize && (query.pageSize = Number(query.pageSize))
@@ -130,15 +127,13 @@ export default {
       }
       this.listQuery = listQuery
     },
-    refresh() {
-      this.$router.push({
-        path: '/branch/list',
-        query: this.listQuery
-      })
-    },
+
+    /**
+     * 请求表格数据, 赋值给组件 data
+     */
     getList() {
       this.listLoading = true
-      listBranch(this.listQuery).then(response => {
+      listManager(this.listQuery).then(response => {
         const {
           data,
           total
@@ -148,23 +143,42 @@ export default {
         this.listLoading = false
       })
     },
+
+    /**
+     * 发起 push 带参刷新 url
+     */
+    refresh() {
+      this.$router.push({
+        path: '/admin-user/manager-list',
+        query: this.listQuery
+      })
+    },
+
+    /**
+     * 查询条件变化后的处理函数
+     */
     handleFilter() {
       this.listQuery.page = 1
       this.refresh()
     },
-    forceRefresh() {
-      window.location.reload()
-    },
+
+    /**
+     * 处理 更新操作 的函数
+     */
     handleUpdate(row) {
-      this.$router.push(`/branch/edit/${row.branch_uid}`)
+      this.$router.push(`/admin-user/manager-edit/${row.manager_uid}`)
     },
+
+    /**
+     * 处理 删除操作 的函数
+     */
     handleDelete(row) {
-      this.$confirm('此操作将永久删除该网点, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteBranch(row.branch_uid).then(response => {
+        deleteManager(row.manager_uid).then(response => {
           this.$notify({
             title: '成功',
             message: response.msg || '删除成功',
@@ -175,11 +189,12 @@ export default {
         })
       })
     },
+
     /**
      * 处理 新增操作 的函数
      */
     handleCreate() {
-      this.$router.push(`/branch/create`)
+      this.$router.push(`/admin-user/manager-create`)
     }
   }
 }

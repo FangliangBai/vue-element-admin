@@ -2,32 +2,25 @@
   <div class="app-container">
     <!-- 顶部搜索条件 -->
     <div class="filter-container">
-      <el-input
-        v-model="listQuery.branch_uid"
+      <txt class="filter-item">统计分类</txt>
+      <el-select
+        v-model="listQuery.groupBy"
+        placeholder="聚合类"
         clearable
-        placeholder="网点编号"
-        style="width: 200px;"
         class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.zip_code"
+      >
+        <el-option v-for="item in groupByOptions" :key="item.value" :label="item.label" :value="item.value" />
+      </el-select>
+      <txt class="filter-item">运营时段</txt>
+      <el-date-picker
+        v-model="listQuery.dateRange"
+        value-format="yyyy-MM-dd"
+        type="daterange"
+        range-separator="至"
+        start-placeholder="开始日期"
+        end-placeholder="结束日期"
         clearable
-        placeholder="邮编"
-        style="width: 200px; margin-left: 10px"
         class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.city_code"
-        clearable
-        placeholder="区号"
-        style="width: 200px; margin-left: 10px"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
       />
       <el-button
         class="filter-item"
@@ -63,37 +56,49 @@
       </template>
     </el-table>
     <!-- 分页组件 -->
-    <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageSize" @pagination="refresh" />
+    <pagination
+      v-show="total>0"
+      :total="total"
+      :page.sync="listQuery.page"
+      :limit.sync="listQuery.pageSize"
+      @pagination="refresh"
+    />
   </div>
 </template>
 
 <script>
-import { listBranch, deleteBranch } from '@/api/branch'
-import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import Pagination from '@/components/Pagination'
+import { operationDefault, operationGroupByMachine, operationGroupByBranch } from './utils/table-config'
+import { listOperation, deleteOperation } from '@/api/finance'
 
 export default {
-  name: 'BranchList',
+  name: 'OperationList',
   components: { Pagination },
-  filters: {},
   data() {
     return {
       tableKey: 0,
-      list: null,
-      total: 0,
-      listLoading: true,
-      listQuery: {},
-      // 表头数据
-      tableHead: [
-        { field_name: 'branch_uid', label: '网点编号' },
-        { field_name: 'branch_name', label: '网点名称' },
-        { field_name: 'longitude', label: '经度' },
-        { field_name: 'latitude', label: '纬度' },
-        { field_name: 'zip_code', label: '邮编' },
-        { field_name: 'city_code', label: '区号' },
-        { field_name: 'address', label: '详细地址' },
-        { field_name: 'manager_name', label: '负责人' }
+      list: null, // 表格数据
+      total: 0, // 总条数
+      listLoading: true, // 表格 loading 动画
+      listQuery: {}, // 查询条件
+      dateRange: '', // 查询时间范围 格式：[ "2021-12-01", "2022-01-03" ]
+      groupBy: '', // 聚类字段
+      groupByOptions: [
+        {
+          value: 'machine_name', // 和数据库字段名相一致
+          label: '设备'
+        },
+        {
+          value: 'branch_name',
+          label: '网点'
+        }
       ],
-      show_action: true // 显示操作列
+      /**
+       * 表格相关设置参数
+       */
+      // 默认表头数据
+      tableHead: operationDefault.tableHead,
+      show_action: true // 显示操作栏
     }
   },
   created() {
@@ -113,13 +118,15 @@ export default {
     next()
   },
   methods: {
+    /**
+     * 初始化查询条件对象
+     */
     parseQuery() {
-      // 收集查询条件
-      const query = Object.assign({}, this.$route.query)
       let listQuery = {
         page: 1,
         pageSize: 20
       }
+      const query = Object.assign({}, this.$route.query)
       if (query) {
         query.page && (query.page = Number(query.page))
         query.pageSize && (query.pageSize = Number(query.pageSize))
@@ -130,41 +137,66 @@ export default {
       }
       this.listQuery = listQuery
     },
-    refresh() {
-      this.$router.push({
-        path: '/branch/list',
-        query: this.listQuery
-      })
-    },
+
+    /**
+     * 请求表格数据, 赋值给组件 data
+     */
     getList() {
       this.listLoading = true
-      listBranch(this.listQuery).then(response => {
+      listOperation(this.listQuery).then(response => {
         const {
           data,
           total
         } = response
         this.list = data
         this.total = total
+        // 根据 listQuery 动态加载表头样式
+        switch (this.listQuery.groupBy) {
+          case 'machine_name':
+            this.tableHead = operationGroupByMachine.tableHead
+            this.show_action = false
+            break
+          case 'branch_name':
+            this.tableHead = operationGroupByBranch.tableHead
+            this.show_action = false
+            break
+          default:
+            this.tableHead = operationDefault.tableHead
+            this.show_action = true
+            break
+        }
         this.listLoading = false
       })
     },
+
+    /**
+     * 发起 push 带参刷新 url
+     */
+    refresh() {
+      this.$router.push({
+        path: '/finance/operation-list',
+        query: this.listQuery
+      })
+    },
+
+    /**
+     * 查询条件变化后的处理函数
+     */
     handleFilter() {
       this.listQuery.page = 1
       this.refresh()
     },
-    forceRefresh() {
-      window.location.reload()
-    },
-    handleUpdate(row) {
-      this.$router.push(`/branch/edit/${row.branch_uid}`)
-    },
+
+    /**
+     * 处理 删除操作 的函数
+     */
     handleDelete(row) {
-      this.$confirm('此操作将永久删除该网点, 是否继续?', '提示', {
+      this.$confirm('此操作将永久删除该记录, 是否继续?', '提示', {
         confirmButtonText: '确定',
         cancelButtonText: '取消',
         type: 'warning'
       }).then(() => {
-        deleteBranch(row.branch_uid).then(response => {
+        deleteOperation(row.operation_uid).then(response => {
           this.$notify({
             title: '成功',
             message: response.msg || '删除成功',
@@ -175,11 +207,19 @@ export default {
         })
       })
     },
+
     /**
      * 处理 新增操作 的函数
      */
     handleCreate() {
-      this.$router.push(`/branch/create`)
+      this.$router.push(`/finance/operation-create`)
+    },
+
+    /**
+     * 处理 更新操作 的函数
+     */
+    handleUpdate(row) {
+      this.$router.push(`/finance/operation-edit/${row.operation_uid}`)
     }
   }
 }

@@ -38,64 +38,31 @@
       >
         查询
       </el-button>
+      <el-button
+        class="filter-item"
+        type="info"
+        icon="el-icon-plus"
+        style="margin-left: 10px"
+        @click="handleCreate"
+      >
+        新增
+      </el-button>
     </div>
     <!-- 搜索结果列表 -->
     <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
-
-      <el-table-column width="120px" align="center" label="编号">
-        <template slot-scope="scope">
-          <span>{{ scope.row.machine_uid }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column min-width="180px" align="center" label="名称">
-        <template slot-scope="scope">
-          <span>{{ scope.row.machine_name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100" align="center" label="网点">
-        <template slot-scope="scope">
-          <span>{{ scope.row.branch_name }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100" align="center" label="状态">
-        <template slot-scope="scope">
-          <span>{{ scope.row.machine_status }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="经度">
-        <template slot-scope="scope">
-          <span>{{ scope.row.longitude }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="纬度">
-        <template slot-scope="scope">
-          <span>{{ scope.row.latitude }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="邮编">
-        <template slot-scope="scope">
-          <span>{{ scope.row.zip_code }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="100px" align="center" label="区号">
-        <template slot-scope="scope">
-          <span>{{ scope.row.city_code }}</span>
-        </template>
-      </el-table-column>
-
-      <el-table-column width="120" align="center" label="操作" fixed="right">
-        <template slot-scope="{ row }">
-          <el-button type="text" icon="el-icon-edit" @click="handleUpdate(row)" />
-          <el-button type="text" icon="el-icon-delete" style="margin-left:20px; color:#f56c6c" @click="handleDelete(row)" />
-        </template>
-      </el-table-column>
+      <!-- 数据列 -->
+      <template v-for="(item, index) in tableHead">
+        <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
+      </template>
+      <!-- 操作列 -->
+      <template v-if="show_action">
+        <el-table-column label="操作" width="120" align="center" fixed="right">
+          <template slot-scope="{ row }">
+            <el-button type="text" icon="el-icon-edit" @click="handleUpdate(row)" />
+            <el-button type="text" icon="el-icon-delete" style="margin-left:20px; color:#f56c6c" @click="handleDelete(row)" />
+          </template>
+        </el-table-column>
+      </template>
     </el-table>
     <!-- 分页组件 -->
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageSize" @pagination="refresh" />
@@ -116,7 +83,19 @@ export default {
       list: null,
       total: 0,
       listLoading: true,
-      listQuery: {}
+      listQuery: {},
+      // 表头数据
+      tableHead: [
+        { field_name: 'machine_uid', label: '设备编号' },
+        { field_name: 'machine_name', label: '设备名称' },
+        { field_name: 'branch_name', label: '网点名称' },
+        { field_name: 'machine_status', label: '设备状态' },
+        { field_name: 'longitude', label: '经度' },
+        { field_name: 'latitude', label: '纬度' },
+        { field_name: 'zip_code', label: '邮编' },
+        { field_name: 'city_code', label: '区号' }
+      ],
+      show_action: true // 显示操作列
     }
   },
   created() {
@@ -197,6 +176,9 @@ export default {
           this.getList()
         })
       })
+    },
+    handleCreate() {
+      this.$router.push(`/machine/create`)
     }
   }
 }

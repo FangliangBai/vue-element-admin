@@ -158,6 +158,82 @@ export const asyncRoutes = [
   /**
    * AutoCC Routes
    */
+
+  /**
+   * 员工管理
+   */
+  {
+    name: 'admin-user',
+    path: '/admin-user',
+    component: Layout,
+    redirect: '/admin-user/create',
+    meta: { title: '员工管理', icon: 'el-icon-user-solid' },
+    children: [
+      {
+        name: 'AdminUserList',
+        path: '/admin-user/list',
+        component: () => import('@/views/admin-user/list'),
+        meta: { title: '平台管理员', icon: 'list', roles: ['admin'] }
+      },
+      {
+        name: 'CreateAdminUser',
+        path: '/admin-user/create',
+        component: () => import('@/views/admin-user/create'),
+        hidden: true,
+        meta: { title: '新增管理员', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'EditAdminUser',
+        path: '/admin-user/edit/:admin_id',
+        component: () => import('@/views/admin-user/edit'),
+        hidden: true,
+        meta: { title: '更新管理员', icon: 'edit', roles: ['admin'] }
+      },
+      // 维修员 相关路径
+      {
+        name: 'MaintainerList',
+        path: '/admin-user/maintainer-list',
+        component: () => import('@/views/admin-user/maintainer-list'),
+        meta: { title: '设备维修人', icon: 'list', roles: ['admin'] }
+      },
+      {
+        name: 'MaintainerCreate',
+        path: '/admin-user/maintainer-create',
+        component: () => import('@/views/admin-user/maintainer-create'),
+        hidden: true,
+        meta: { title: '维修员添加', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'MaintainerEdit',
+        path: '/admin-user/maintainer-edit/:maintainer_uid',
+        component: () => import('@/views/admin-user/maintainer-edit'),
+        hidden: true,
+        meta: { title: '维修员编辑', icon: 'edit', roles: ['admin'] }
+      },
+      // 负责人 相关路径
+      {
+        name: 'ManagerList',
+        path: '/admin-user/manager-list',
+        component: () => import('@/views/admin-user/manager-list'),
+        meta: { title: '网点负责人', icon: 'list', roles: ['admin'] }
+      },
+      {
+        name: 'ManagerCreate',
+        path: '/admin-user/manager-create',
+        component: () => import('@/views/admin-user/manager-create'),
+        hidden: true,
+        meta: { title: '负责人添加', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'ManagerEdit',
+        path: '/admin-user/manager-edit/:manager_uid',
+        component: () => import('@/views/admin-user/manager-edit'),
+        hidden: true,
+        meta: { title: '负责人编辑', icon: 'edit', roles: ['admin'] }
+      }
+    ]
+  },
+
   /**
    * 洗车机管理
    */
@@ -165,14 +241,14 @@ export const asyncRoutes = [
     name: 'machine',
     path: '/machine',
     component: Layout,
-    redirect: '/machine/create',
-    meta: { title: '洗车机管理', icon: 'documentation' },
+    redirect: '/machine/list',
+    meta: { title: '设备管理', icon: 'component' },
     children: [
       {
         name: 'CreateMachine',
         path: '/machine/create',
         component: () => import('@/views/machine/create'),
-        meta: { title: '新增洗车机', icon: 'edit', roles: ['admin'] }
+        meta: { title: '新增设备', icon: 'edit', roles: ['admin'] }
       },
       {
         name: 'EditMachine',
@@ -185,7 +261,7 @@ export const asyncRoutes = [
         name: 'MachineList',
         path: '/machine/list',
         component: () => import('@/views/machine/list'),
-        meta: { title: '洗车机列表', icon: 'list', roles: ['admin'] }
+        meta: { title: '设备列表', icon: 'component', roles: ['admin'] }
       }
     ]
   },
@@ -198,7 +274,7 @@ export const asyncRoutes = [
     path: '/branch',
     component: Layout,
     redirect: '/branch/create',
-    meta: { title: '网点管理', icon: 'documentation' },
+    meta: { title: '网点管理', icon: 'tree' },
     children: [
       {
         name: 'CreateBranch',
@@ -217,7 +293,102 @@ export const asyncRoutes = [
         name: 'BranchList',
         path: '/branch/list',
         component: () => import('@/views/branch/list'),
-        meta: { title: '网点列表', icon: 'list', roles: ['admin'] }
+        meta: { title: '网点列表', icon: 'tree', roles: ['admin'] }
+      }
+    ]
+  },
+
+  /**
+   * 财务管理
+   */
+  {
+    name: 'finance',
+    path: '/finance',
+    component: Layout,
+    redirect: 'finance/list',
+    meta: {
+      title: '财务管理',
+      icon: 'money'
+    },
+    children: [
+      /**
+       * 维修费用
+       */
+      {
+        name: 'MaintainList',
+        path: '/finance/maintain-list',
+        component: () => import('@/views/finance/maintain-list'),
+        meta: { title: '维修费用', icon: 'el-icon-s-open', roles: ['admin'] }
+      },
+      {
+        name: 'MaintainCreate',
+        path: '/finance/maintain-create',
+        component: () => import('@/views/finance/maintain-create'),
+        hidden: true,
+        meta: { title: '新增维修支出', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'MaintainEdit',
+        path: '/finance/maintain-edit/:maintain_uid',
+        component: () => import('@/views/finance/maintain-edit'),
+        hidden: true,
+        meta: { title: '更新维修支出', icon: 'edit', roles: ['admin'] }
+      },
+      /**
+       * 运营费用
+       */
+      {
+        name: 'OperationList',
+        path: '/finance/operation-list',
+        component: () => import('@/views/finance/operation-list'),
+        meta: { title: '运营费用', icon: 'el-icon-s-shop', roles: ['admin'] }
+      },
+      {
+        name: 'OperationCreate',
+        path: '/finance/operation-create',
+        component: () => import('@/views/finance/operation-create'),
+        hidden: true,
+        meta: { title: '新增运营支出', icon: 'edit', roles: ['admin'] }
+      },
+      {
+        name: 'OperationEdit',
+        path: '/finance/operation-edit/:operation_uid',
+        component: () => import('@/views/finance/operation-edit'),
+        hidden: true,
+        meta: { title: '更新运营支出', icon: 'edit', roles: ['admin'] }
+      },
+      /**
+       * 价目表
+       */
+      {
+        name: 'TariffEdit',
+        path: '/finance/tariff-edit',
+        component: () => import('@/views/finance/tariff-edit'),
+        meta: { title: '服务单价', icon: 'el-icon-info', roles: ['admin'] }
+      },
+      /**
+       * 客户信息
+       */
+      {
+        name: 'CustomerList',
+        path: '/finance/customer-list',
+        component: () => import('@/views/finance/customer-list'),
+        meta: { title: '客户明细', icon: 'peoples', roles: ['admin'] }
+      },
+      /**
+       * 运营统计
+       */
+      {
+        name: 'WashedOrderList',
+        path: '/finance/washed-order-list',
+        component: () => import('@/views/finance/washed-order-list'),
+        meta: { title: '消费统计', icon: 'shopping', roles: ['admin'] }
+      },
+      {
+        name: 'TopupOrderList',
+        path: '/finance/topup-order-list',
+        component: () => import('@/views/finance/topup-order-list'),
+        meta: { title: '充值统计', icon: 'el-icon-s-finance', roles: ['admin'] }
       }
     ]
   },

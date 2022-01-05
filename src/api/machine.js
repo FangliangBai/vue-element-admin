@@ -32,6 +32,13 @@ export function listMachine(query) {
   })
 }
 
+export function getMachineOptions() {
+  return request({
+    url: '/machine/machine-options',
+    method: 'get'
+  })
+}
+
 export function deleteMachine(machine_uid) {
   return request({
     url: '/machine/delete',

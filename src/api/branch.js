@@ -32,6 +32,13 @@ export function listBranch(query) {
   })
 }
 
+export function getBranchOptions() {
+  return request({
+    url: '/branch/branch-options',
+    method: 'get'
+  })
+}
+
 export function deleteBranch(branch_uid) {
   return request({
     url: '/branch/delete',

@@ -53,7 +53,7 @@ export default {
   },
   computed: {
     editorOptions() {
-      const options = Object.assign({}, defaultOptions, this.options)
+      const timeOptions = Object.assign({}, defaultOptions, this.options)
       options.initialEditType = this.mode
       options.height = this.height
       options.language = this.language

@@ -13,7 +13,6 @@
       <div class="createPost-main-container">
         <el-row>
           <el-col :span="24">
-
             <!-- 第 1 行 -->
             <el-row>
               <el-col :span="8">
@@ -31,18 +30,17 @@
                 </el-form-item>
               </el-col>
             </el-row>
-
             <div class="postInfo-container">
               <!-- 第 2 行 -->
               <el-row>
                 <el-col :span="8">
                   <el-form-item label-width="60px" prop="longitude" label="经度" class="postInfo-container-item">
-                    <el-input v-model="postForm.longitude" :rows="1" type="textarea" class="article-textarea" autosize placeholder="网点位置经度值" />
+                    <el-input v-model="postForm.longitude" :rows="1" class="article-textarea" autosize placeholder="网点位置经度值" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label-width="60px" prop="latitude" label="纬度" class="postInfo-container-item">
-                    <el-input v-model="postForm.latitude" :rows="1" type="textarea" class="article-textarea" autosize placeholder="网点位置纬度值" />
+                    <el-input v-model="postForm.latitude" :rows="1" class="article-textarea" autosize placeholder="网点位置纬度值" />
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -50,35 +48,36 @@
               <el-row>
                 <el-col :span="8">
                   <el-form-item label-width="60px" prop="zip_code" label="邮编" class="postInfo-container-item">
-                    <el-input v-model="postForm.zip_code" :rows="1" type="textarea" class="article-textarea" autosize placeholder="网点所在地邮编" />
+                    <el-input v-model="postForm.zip_code" :rows="1" class="article-textarea" autosize placeholder="网点所在地邮编" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label-width="60px" prop="city_code" label="区号" class="postInfo-container-item">
-                    <el-input v-model="postForm.city_code" :rows="1" type="textarea" class="article-textarea" autosize placeholder="网点所在地区号" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
-                  <el-form-item label-width="60px" prop="address" label="地址" class="postInfo-container-item">
-                    <el-input v-model="postForm.address" :rows="1" type="textarea" class="article-textarea" autosize placeholder="网点所在地址全称" />
+                    <el-input v-model="postForm.city_code" :rows="1" class="article-textarea" autosize placeholder="网点所在地区号" />
                   </el-form-item>
                 </el-col>
               </el-row>
               <!-- 第 4 行 -->
               <el-row>
                 <el-col :span="8">
-                  <el-form-item label-width="60px" prop="num_machines" label="数量" class="postInfo-container-item">
-                    <el-input v-model="postForm.num_machines" :rows="1" type="textarea" class="article-textarea" autosize placeholder="洗车机台数" />
+                  <el-form-item label-width="60px" prop="address" label="地址" class="postInfo-container-item">
+                    <el-input v-model="postForm.address" :rows="1" class="article-textarea" autosize placeholder="网点所在地址全称" />
                   </el-form-item>
                 </el-col>
                 <el-col :span="8">
                   <el-form-item label-width="60px" prop="manager_name" label="负责人" class="postInfo-container-item">
-                    <el-input v-model="postForm.manager_name" :rows="1" type="textarea" class="article-textarea" autosize placeholder="网点负责人名称" />
+                    <el-select v-model="postForm.manager_name" placeholder="请选择">
+                      <el-option
+                        v-for="item in managerOptions"
+                        :key="item.value"
+                        :label="item.label"
+                        :value="item.value"
+                      />
+                    </el-select>
                   </el-form-item>
                 </el-col>
               </el-row>
             </div>
-
           </el-col>
         </el-row>
       </div>
@@ -93,7 +92,7 @@ import Sticky from '@/components/Sticky' // 粘性header组件
 /**
  * API 组件
  */
-import { createBranch, getBranchById, updateBranch } from '@/api/branch'
+import { createBranch, getBranchById, updateBranch, getBranchOptions } from '@/api/branch'
 
 const defaultForm = {
   branch_uid: '',
@@ -103,7 +102,6 @@ const defaultForm = {
   zip_code: '',
   city_code: '',
   address: '',
-  num_machines: '',
   manager_name: ''
 }
 
@@ -147,9 +145,12 @@ export default {
         zip_code: [{ validator: validateRequire }],
         city_code: [{ validator: validateRequire }],
         address: [{ validator: validateRequire }],
-        num_machines: [{ validator: validateRequire }],
         manager_name: [{ validator: validateRequire }]
-      }
+      },
+      /**
+       * 表单项的下拉菜单选项
+       */
+      managerOptions: []
     }
   },
   computed: {},
@@ -159,7 +160,16 @@ export default {
       this.getBranchData(branch_uid)
     }
   },
+  mounted() {
+    // 数据库获取 operation 部分下拉形式表单项的数据
+    this.setOptions()
+  },
   methods: {
+    getBranchData(branch_uid) {
+      getBranchById(branch_uid).then(response => {
+        this.setData(response.data)
+      })
+    },
     setData(data) {
       const {
         branch_uid,
@@ -169,7 +179,6 @@ export default {
         zip_code,
         city_code,
         address,
-        num_machines,
         manager_name
       } = data
       this.postForm = {
@@ -180,9 +189,13 @@ export default {
         zip_code,
         city_code,
         address,
-        num_machines,
         manager_name
       }
+    },
+    setOptions() {
+      getBranchOptions().then(result => {
+        [this.managerOptions] = result.data
+      })
     },
     submitForm() {
       console.log(this.postForm)
@@ -195,7 +208,7 @@ export default {
            * 判断是添加新数据还是更新数据
            */
           if (!this.isEdit) { // 添加数据
-            createBranch(branch).then(response => {
+            createBranch(branch).then(() => {
               this.loading = false
               this.$notify({
                 title: '创建成功',
@@ -207,7 +220,7 @@ export default {
               this.loading = false
             })
           } else { // 更新数据
-            updateBranch(branch).then(response => {
+            updateBranch(branch).then(() => {
               this.loading = false
               this.$notify({
                 title: '更新成功',
@@ -228,11 +241,6 @@ export default {
           })
           return false
         }
-      })
-    },
-    getBranchData(branch_uid) {
-      getBranchById(branch_uid).then(response => {
-        this.setData(response.data)
       })
     }
   }

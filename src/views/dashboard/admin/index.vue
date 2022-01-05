@@ -1,96 +1,182 @@
 <template>
   <div class="dashboard-editor-container">
-    <github-corner class="github-corner" />
-
-    <panel-group @handleSetLineChartData="handleSetLineChartData" />
-
+    <!-- 顶部数据栏 -->
+    <panel-group />
+    <!-- 统计选项卡 -->
+    <el-tabs v-model="activeName">
+      <el-tab-pane label="消费统计" name="消费统计">
+        <el-card class="box-card" style="margin-bottom:32px;">
+          <txt style="margin-left: 10px;">单位时段</txt>
+          <el-select
+            v-model="unitTime"
+            placeholder="请选择"
+            style="margin-left: 10px;"
+          >
+            <el-option
+              v-for="item in timeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <txt style="margin-left: 20px;">地区范围</txt>
+          <el-select
+            v-model="unitRegion"
+            placeholder="请选择"
+            style="margin-left: 10px;"
+          >
+            <el-option
+              v-for="item in regionOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-input
+            v-model="target"
+            placeholder="请输入内容"
+            style="width: 200px; margin-left: 10px;"
+          />
+          <el-button
+            class="filter-item"
+            type="primary"
+            icon="el-icon-search"
+            style="margin-left: 20px"
+            @click="summarizeServiceFigure"
+          >
+            查询
+          </el-button>
+        </el-card>
+      </el-tab-pane>
+      <el-tab-pane label="充值统计" name="充值统计">
+        <el-card class="box-card" style="margin-bottom:32px;">
+          <txt style="margin-left: 10px;">单位时段</txt>
+          <el-select
+            v-model="unitTime"
+            placeholder="请选择"
+            style="margin-left: 10px;"
+          >
+            <el-option
+              v-for="item in timeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-button
+            class="filter-item"
+            type="primary"
+            icon="el-icon-search"
+            style="margin-left: 20px"
+            @click="summarizeTopupFigure"
+          >
+            查询
+          </el-button>
+        </el-card>
+      </el-tab-pane>
+    </el-tabs>
+    <!-- 折线图 -->
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData" />
-    </el-row>
-
-    <el-row :gutter="32">
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <raddar-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <pie-chart />
-        </div>
-      </el-col>
-      <el-col :xs="24" :sm="24" :lg="8">
-        <div class="chart-wrapper">
-          <bar-chart />
-        </div>
-      </el-col>
-    </el-row>
-
-    <el-row :gutter="8">
-      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
-        <transaction-table />
-      </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-        <todo-list />
-      </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-        <box-card />
-      </el-col>
     </el-row>
   </div>
 </template>
 
 <script>
-import GithubCorner from '@/components/GithubCorner'
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
-import RaddarChart from './components/RaddarChart'
-import PieChart from './components/PieChart'
-import BarChart from './components/BarChart'
-import TransactionTable from './components/TransactionTable'
-import TodoList from './components/TodoList'
-import BoxCard from './components/BoxCard'
-
-const lineChartData = {
-  newVisitis: {
-    expectedData: [100, 120, 161, 134, 105, 160, 165],
-    actualData: [120, 82, 91, 154, 162, 140, 145]
-  },
-  messages: {
-    expectedData: [200, 192, 120, 144, 160, 130, 140],
-    actualData: [180, 160, 151, 106, 145, 150, 130]
-  },
-  purchases: {
-    expectedData: [80, 100, 121, 104, 105, 90, 100],
-    actualData: [120, 90, 100, 138, 142, 130, 130]
-  },
-  shoppings: {
-    expectedData: [130, 140, 141, 142, 145, 150, 160],
-    actualData: [120, 82, 91, 154, 162, 140, 130]
-  }
-}
+import { getServiceData, getTopupData } from '@/api/dashboard'
 
 export default {
   name: 'DashboardAdmin',
   components: {
-    GithubCorner,
     PanelGroup,
-    LineChart,
-    RaddarChart,
-    PieChart,
-    BarChart,
-    TransactionTable,
-    TodoList,
-    BoxCard
+    LineChart
   },
   data() {
     return {
-      lineChartData: lineChartData.newVisitis
+      lineChartData: '', // 图标数据
+      /**
+       * 消费统计 Tab
+       */
+      activeName: '消费统计',
+      // 单位时段
+      timeOptions: [{
+        value: 'day',
+        label: '日'
+      }, {
+        value: 'week',
+        label: '周'
+      }, {
+        value: 'month',
+        label: '月'
+      }, {
+        value: 'year',
+        label: '年'
+      }],
+      unitTime: 'day',
+      // 地区范围
+      regionOptions: [{
+        value: 'machine',
+        label: '设备'
+      }, {
+        value: 'branch',
+        label: '网点'
+      }, {
+        value: 'cityCode',
+        label: '区号'
+      }],
+      unitRegion: 'machine',
+      target: ''
     }
   },
+  mounted() {
+    // this.summarizeServiceFigure()
+  },
   methods: {
-    handleSetLineChartData(type) {
-      this.lineChartData = lineChartData[type]
+    // 获取 消费统计 图表数据
+    summarizeServiceFigure() {
+      const query = {
+        groupBy: this.unitTime,
+        region: this.unitRegion,
+        target: this.target
+      }
+      getServiceData(query).then(response => {
+        const {
+          data
+        } = response
+        const chartData = {
+          xAxisLabel: [],
+          data: [],
+          legend: '洗车次数'
+        }
+        data.forEach(item => {
+          chartData.xAxisLabel.push(item.xAxisLabel)
+          chartData.data.push(item.data)
+        })
+        this.lineChartData = chartData
+      })
+    },
+    // 获取 充值统计 图表数据
+    summarizeTopupFigure() {
+      const query = {
+        groupBy: this.unitTime
+      }
+      getTopupData(query).then(response => {
+        const {
+          data
+        } = response
+        const chartData = {
+          xAxisLabel: [],
+          data: [],
+          legend: '充值次数'
+        }
+        data.forEach(item => {
+          chartData.xAxisLabel.push(item.xAxisLabel)
+          chartData.data.push(item.data)
+        })
+        this.lineChartData = chartData
+      })
     }
   }
 }
@@ -104,7 +190,7 @@ export default {
 
   .github-corner {
     position: absolute;
-    top: 0px;
+    top: 0;
     border: 0;
     right: 0;
   }
