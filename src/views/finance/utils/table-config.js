@@ -170,6 +170,16 @@ const washedNumGroupByCityCode = {
   ]
 }
 
+const washedAll = {
+  tableHead: [
+    { field_name: 'machine_uid', label: '设备 ID' },
+    { field_name: 'branch_name', label: '网点名称' },
+    { field_name: 'city_code', label: '区号' },
+    { field_name: 'order_time', label: '洗车时间' },
+    { field_name: 'order_cost', label: '消费金额 (元)' }
+  ]
+}
+
 module.exports = {
   // maintain-list 页面 table
   maintainDefault,
@@ -182,5 +192,6 @@ module.exports = {
   // washed-order-list 页面 table
   washedNumGroupByMachine,
   washedNumGroupByBranch,
-  washedNumGroupByCityCode
+  washedNumGroupByCityCode,
+  washedAll
 }

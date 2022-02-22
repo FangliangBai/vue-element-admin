@@ -3,7 +3,13 @@
     <el-form ref="loginForm" :model="loginForm" :rules="loginRules" class="login-form" autocomplete="on" label-position="left">
 
       <div class="title-container">
-        <h3 class="title">小微智能洗车后台</h3>
+        <el-image
+          style="width: 90%; height: 90%"
+          :src="require('./login-logo.png')"
+          fit="fit"
+        />
+        <!--<img src="./login-logo.png" class="title" alt="login-logo" />-->
+        <h3 class="title">小微智能洗车 管理平台</h3>
       </div>
 
       <el-form-item prop="username">
@@ -262,7 +268,7 @@ $light_gray:#eee;
     position: relative;
     width: 520px;
     max-width: 100%;
-    padding: 160px 35px 0;
+    padding: 0px 35px 0;
     margin: 0 auto;
     overflow: hidden;
   }

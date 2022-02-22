@@ -73,7 +73,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
-import { washedNumGroupByMachine, washedNumGroupByBranch, washedNumGroupByCityCode } from './utils/table-config'
+import { washedNumGroupByMachine, washedNumGroupByBranch, washedNumGroupByCityCode, washedAll } from './utils/table-config'
 import { listWashedOrder } from '@/api/finance'
 
 export default {
@@ -104,6 +104,10 @@ export default {
         {
           value: 'city_code',
           label: '区号'
+        },
+        {
+          value: 'all',
+          label: '全部'
         }
       ],
       /**
@@ -166,6 +170,7 @@ export default {
           data,
           total
         } = response
+        console.log(data)
         this.list = data
         this.total = total
         // 根据 listQuery 动态加载表格样式
@@ -178,6 +183,9 @@ export default {
             break
           case 'city_code':
             this.tableHead = washedNumGroupByCityCode.tableHead
+            break
+          case 'all':
+            this.tableHead = washedAll.tableHead
             break
           default:
             this.tableHead = washedNumGroupByMachine.tableHead
