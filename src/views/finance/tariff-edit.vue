@@ -48,7 +48,16 @@
                 </el-form-item>
               </el-col>
             </el-row>
+            <el-row>
+              <el-col :span="7">
+                <el-form-item label="水龙头：" prop="price_tap" label-width="100px" style="margin-bottom: 20px; margin-right: 10px;">
+                  <el-input v-model="postForm.price_tap" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
             <aside>暂停时长 / 单价 (元/10秒)</aside>
+
             <el-row>
               <el-col :span="7">
                 <el-form-item label="暂停超时计费：" prop="price_pause" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
@@ -80,6 +89,7 @@ const defaultForm = {
   price_blower: '',
   price_dryer: '',
   price_pause: '',
+  price_tap: '',
   free_pause_time: ''
 }
 
@@ -119,6 +129,7 @@ export default {
         price_blower: [{ validator: validateRequire }],
         price_dryer: [{ validator: validateRequire }],
         price_pause: [{ validator: validateRequire }],
+        price_tap: [{ validator: validateRequire }],
         free_pause_time: [{ validator: validateRequire }]
       }
     }
@@ -143,6 +154,7 @@ export default {
         price_blower: data.price_blower,
         price_dryer: data.price_dryer,
         price_pause: data.price_pause,
+        price_tap: data.price_tap,
         free_pause_time: data.free_pause_time
       }
     },
