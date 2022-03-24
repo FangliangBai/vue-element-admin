@@ -44,12 +44,75 @@
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
-      border
       fit
       highlight-current-row
       style="width: 100%;"
       @sort-change="handleSortChange"
     >
+      <el-table-column
+        type="expand"
+      >
+        <template slot-scope="props">
+          <el-row :gutter="20">
+            <el-col :span="12">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="冲水时长: ">
+                  <span>{{ props.row.service_time.water }} 秒</span>
+                </el-form-item>
+                <el-form-item label="打沫时长: ">
+                  <span>{{ props.row.service_time.froth }} 秒</span>
+                </el-form-item>
+                <el-form-item label="吸尘时长: ">
+                  <span>{{ props.row.service_time.hoover }} 秒</span>
+                </el-form-item>
+                <el-form-item label="臭氧时长: ">
+                  <span>{{ props.row.service_time.ozone }} 秒</span>
+                </el-form-item>
+                <el-form-item label="吹风时长: ">
+                  <span>{{ props.row.service_time.blower }} 秒</span>
+                </el-form-item>
+                <el-form-item label="热风时长: ">
+                  <span>{{ props.row.service_time.dryer }} 秒</span>
+                </el-form-item>
+                <el-form-item label="暂停时长: ">
+                  <span>{{ props.row.service_time.pause }} 秒</span>
+                </el-form-item>
+                <el-form-item label="水龙头时长: ">
+                  <span>{{ props.row.service_time.tap }} 秒</span>
+                </el-form-item>
+              </el-form>
+            </el-col>
+            <el-col :span="12">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="冲水消费: ">
+                  <span>{{ props.row.service_cost.water }} 元</span>
+                </el-form-item>
+                <el-form-item label="打沫消费: ">
+                  <span>{{ props.row.service_cost.froth }} 元</span>
+                </el-form-item>
+                <el-form-item label="吸尘消费: ">
+                  <span>{{ props.row.service_cost.hoover }} 元</span>
+                </el-form-item>
+                <el-form-item label="臭氧消费: ">
+                  <span>{{ props.row.service_cost.ozone }} 元</span>
+                </el-form-item>
+                <el-form-item label="吹风消费: ">
+                  <span>{{ props.row.service_cost.blower }} 元</span>
+                </el-form-item>
+                <el-form-item label="热风消费: ">
+                  <span>{{ props.row.service_cost.dryer }} 元</span>
+                </el-form-item>
+                <el-form-item label="暂停消费: ">
+                  <span>{{ props.row.service_cost.pause }} 元</span>
+                </el-form-item>
+                <el-form-item label="水龙头消费: ">
+                  <span>{{ props.row.service_cost.tap }} 元</span>
+                </el-form-item>
+              </el-form>
+            </el-col>
+          </el-row>
+        </template>
+      </el-table-column>
       <template v-for="(item, index) in tableHead">
         <el-table-column
           :key="index"
@@ -170,7 +233,6 @@ export default {
           data,
           total
         } = response
-        console.log(data)
         this.list = data
         this.total = total
         // 根据 listQuery 动态加载表格样式
@@ -263,3 +325,18 @@ export default {
   }
 }
 </script>
+
+<style>
+.demo-table-expand {
+  font-size: 0;
+}
+.demo-table-expand label {
+  width: 90px;
+  color: #99a9bf;
+}
+.demo-table-expand .el-form-item {
+  margin-right: 0;
+  margin-bottom: 0;
+  width: 50%;
+}
+</style>
