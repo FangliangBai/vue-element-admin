@@ -2,33 +2,31 @@
   <div class="app-container">
     <!-- 顶部搜索条件 -->
     <div class="filter-container">
+      <!-- 设备编号 -->
       <el-input
         v-model="listQuery.machine_uid"
         clearable
         placeholder="编号"
         style="width: 200px;"
         class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
       />
-      <el-input
-        v-model="listQuery.zip_code"
-        clearable
-        placeholder="邮编"
-        style="width: 200px; margin-left: 10px"
+      <!-- 设备区域 -->
+      <el-cascader
+        v-model="listQuery.regionCode"
+        :options="regions"
         class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.city_code"
         clearable
-        placeholder="区号"
-        style="width: 200px; margin-left: 10px"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
+        placeholder="设备所在区域"
       />
+      <!-- 设备状态 -->
+      <el-select v-model="listQuery.machine_status" placeholder="请选择设备状态" class="filter-item" clearable>
+        <el-option
+          v-for="item in statusOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
       <el-button
         class="filter-item"
         type="primary"
@@ -48,8 +46,17 @@
         新增
       </el-button>
     </div>
+
     <!-- 搜索结果列表 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
+    <el-table
+      :key="tableKey"
+      v-loading="listLoading"
+      :data="list"
+      fit
+      stripe
+      highlight-current-row
+      style="width: 100%;"
+    >
       <!-- 数据列 -->
       <template v-for="(item, index) in tableHead">
         <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
@@ -64,6 +71,7 @@
         </el-table-column>
       </template>
     </el-table>
+
     <!-- 分页组件 -->
     <pagination v-show="total>0" :total="total" :page.sync="listQuery.page" :limit.sync="listQuery.pageSize" @pagination="refresh" />
   </div>
@@ -72,6 +80,7 @@
 <script>
 import { listMachine, deleteMachine } from '@/api/machine'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
+import { regionDataPlus } from 'element-china-area-data'
 
 export default {
   name: 'MachineList',
@@ -79,6 +88,9 @@ export default {
   filters: {},
   data() {
     return {
+      /**
+       * 组件数据
+       */
       tableKey: 0,
       list: null,
       total: 0,
@@ -90,12 +102,17 @@ export default {
         { field_name: 'machine_name', label: '设备名称' },
         { field_name: 'branch_name', label: '网点名称' },
         { field_name: 'machine_status', label: '设备状态' },
-        { field_name: 'longitude', label: '经度' },
-        { field_name: 'latitude', label: '纬度' },
-        { field_name: 'zip_code', label: '邮编' },
-        { field_name: 'city_code', label: '区号' }
+        { field_name: 'address', label: '地址' }
       ],
-      show_action: true // 显示操作列
+      statusOptions: [
+        { value: '启用', label: '启用' },
+        { value: '离线', label: '离线' }
+      ],
+      show_action: true, // 显示操作列
+      /**
+       * 省市区的下拉菜单选项
+       */
+      regions: regionDataPlus
     }
   },
   created() {

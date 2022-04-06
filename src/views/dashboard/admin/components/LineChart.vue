@@ -62,12 +62,17 @@ export default {
       this.setOptions(this.chartData)
     },
     setOptions({ data, xAxisLabel, legend } = {}) {
+      // 重新赋值, 以去掉 Vue observer. 否则无法显示
+      const xAxisData = []
+      xAxisLabel.forEach(item => {
+        xAxisData.push(item)
+      })
       this.chart.setOption({
         xAxis: {
-          data: xAxisLabel,
+          data: xAxisData,
           boundaryGap: false,
           axisTick: {
-            show: false
+            show: true
           }
         },
         grid: {

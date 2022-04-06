@@ -394,6 +394,44 @@ export const asyncRoutes = [
   },
 
   /**
+   * 订单管理
+   * 用于查看订单明细
+   * 包含: 充值订单, 退款订单, 洗车订单
+   */
+  {
+    name: 'OrderManage',
+    path: '/order-manage',
+    component: Layout,
+    meta: {
+      title: '订单管理',
+      icon: 'el-icon-s-order'
+    },
+    children: [
+      // 充值订单
+      {
+        name: 'OrderTopup',
+        path: '/order-manage/order-topup',
+        component: () => import('@/views/order-manage/order-topup'),
+        meta: { title: '充值订单', icon: 'el-icon-s-finance', roles: ['admin'] }
+      },
+      // 退款订单
+      {
+        name: 'OrderRefund',
+        path: '/order-manage/order-refund',
+        component: () => import('@/views/order-manage/order-refund'),
+        meta: { title: '退款订单', icon: 'el-icon-s-finance', roles: ['admin'] }
+      },
+      // 洗车订单
+      {
+        name: 'OrderWashed',
+        path: '/order-manage/order-washed',
+        component: () => import('@/views/order-manage/order-washed'),
+        meta: { title: '洗车订单', icon: 'el-icon-s-claim', roles: ['admin'] }
+      }
+    ]
+  },
+
+  /**
    * Default Routes
    */
 

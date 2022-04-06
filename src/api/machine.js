@@ -27,8 +27,8 @@ export function updateMachine(machine) {
 export function listMachine(query) {
   return request({
     url: '/machine/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   })
 }
 

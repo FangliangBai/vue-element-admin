@@ -2,58 +2,23 @@
   <div class="dashboard-editor-container">
     <!-- 顶部数据栏 -->
     <panel-group />
+
     <!-- 统计选项卡 -->
-    <el-tabs v-model="activeName">
-      <el-tab-pane label="消费统计" name="消费统计">
-        <el-card class="box-card" style="margin-bottom:32px;">
-          <txt style="margin-left: 10px;">单位时段</txt>
-          <el-select
-            v-model="unitTime"
-            placeholder="请选择"
-            style="margin-left: 10px;"
-          >
-            <el-option
-              v-for="item in timeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-          <txt style="margin-left: 20px;">地区范围</txt>
-          <el-select
-            v-model="unitRegion"
-            placeholder="请选择"
-            style="margin-left: 10px;"
-          >
-            <el-option
-              v-for="item in regionOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            />
-          </el-select>
-          <el-input
-            v-model="target"
-            placeholder="请输入内容"
-            style="width: 200px; margin-left: 10px;"
+    <el-tabs v-model="activeName" type="border-card">
+      <el-tab-pane label="消费金额" name="消费金额">
+        <el-card class="box-card" style="margin-bottom:10px;">
+          <el-date-picker
+            v-model="dateRange"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            clearable
           />
-          <el-button
-            class="filter-item"
-            type="primary"
-            icon="el-icon-search"
-            style="margin-left: 20px"
-            @click="summarizeServiceFigure"
-          >
-            查询
-          </el-button>
-        </el-card>
-      </el-tab-pane>
-      <el-tab-pane label="充值统计" name="充值统计">
-        <el-card class="box-card" style="margin-bottom:32px;">
-          <txt style="margin-left: 10px;">单位时段</txt>
           <el-select
             v-model="unitTime"
-            placeholder="请选择"
+            placeholder="请选择统计时间单位"
             style="margin-left: 10px;"
           >
             <el-option
@@ -68,24 +33,95 @@
             type="primary"
             icon="el-icon-search"
             style="margin-left: 20px"
-            @click="summarizeTopupFigure"
+            @click="summarizeSumService"
           >
             查询
           </el-button>
         </el-card>
       </el-tab-pane>
+
+      <el-tab-pane label="洗车服务量" name="洗车服务量">
+        <el-card class="box-card" style="margin-bottom:10px;">
+          <el-date-picker
+            v-model="dateRange"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            clearable
+          />
+          <el-select
+            v-model="unitTime"
+            placeholder="请选择统计时间单位"
+            style="margin-left: 10px;"
+          >
+            <el-option
+              v-for="item in timeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-button
+            class="filter-item"
+            type="primary"
+            icon="el-icon-search"
+            style="margin-left: 20px"
+            @click="summarizeNumService"
+          >
+            查询
+          </el-button>
+        </el-card>
+      </el-tab-pane>
+
+      <el-tab-pane label="充值金额" name="充值金额">
+        <el-card class="box-card" style="margin-bottom:10px;">
+          <el-date-picker
+            v-model="dateRange"
+            value-format="yyyy-MM-dd"
+            type="daterange"
+            range-separator="至"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            clearable
+          />
+          <el-select
+            v-model="unitTime"
+            placeholder="请选择统计时间单位"
+            style="margin-left: 10px;"
+          >
+            <el-option
+              v-for="item in timeOptions"
+              :key="item.value"
+              :label="item.label"
+              :value="item.value"
+            />
+          </el-select>
+          <el-button
+            class="filter-item"
+            type="primary"
+            icon="el-icon-search"
+            style="margin-left: 20px"
+            @click="summarizeSumTopup"
+          >
+            查询
+          </el-button>
+        </el-card>
+      </el-tab-pane>
+
+      <!-- 折线图 -->
+      <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
+        <line-chart :chart-data="lineChartData" />
+      </el-row>
     </el-tabs>
-    <!-- 折线图 -->
-    <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData" />
-    </el-row>
   </div>
 </template>
 
 <script>
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
-import { getServiceData, getTopupData } from '@/api/dashboard'
+import { getSumService, getNumService, getSumTopup } from '@/api/dashboard'
 
 export default {
   name: 'DashboardAdmin',
@@ -99,56 +135,48 @@ export default {
       /**
        * 消费统计 Tab
        */
-      activeName: '消费统计',
+      activeName: '消费金额',
+      // 时间范围
+      dateRange: [],
       // 单位时段
       timeOptions: [{
         value: 'day',
-        label: '日'
+        label: '日汇总'
       }, {
         value: 'week',
-        label: '周'
+        label: '周汇总'
       }, {
         value: 'month',
-        label: '月'
+        label: '月汇总'
       }, {
         value: 'year',
-        label: '年'
+        label: '年汇总'
       }],
-      unitTime: 'day',
-      // 地区范围
-      regionOptions: [{
-        value: 'machine',
-        label: '设备'
-      }, {
-        value: 'branch',
-        label: '网点'
-      }, {
-        value: 'cityCode',
-        label: '区号'
-      }],
-      unitRegion: 'machine',
-      target: ''
+      unitTime: 'day'
     }
   },
   mounted() {
-    // this.summarizeServiceFigure()
+    const end = new Date()
+    const start = new Date()
+    start.setMonth(start.getMonth() - 6)
+    this.dateRange = [start, end]
+    this.summarizeSumService()
   },
   methods: {
-    // 获取 消费统计 图表数据
-    summarizeServiceFigure() {
+    // 获取 消费金额 图表数据
+    summarizeSumService() {
       const query = {
-        groupBy: this.unitTime,
-        region: this.unitRegion,
-        target: this.target
+        dateRange: this.dateRange,
+        groupBy: this.unitTime
       }
-      getServiceData(query).then(response => {
+      getSumService(query).then(response => {
         const {
           data
         } = response
         const chartData = {
           xAxisLabel: [],
           data: [],
-          legend: '洗车次数'
+          legend: '消费金额'
         }
         data.forEach(item => {
           chartData.xAxisLabel.push(item.xAxisLabel)
@@ -157,19 +185,43 @@ export default {
         this.lineChartData = chartData
       })
     },
-    // 获取 充值统计 图表数据
-    summarizeTopupFigure() {
+
+    // 获取 洗车服务量 图表数据
+    summarizeNumService() {
       const query = {
+        dateRange: this.dateRange,
         groupBy: this.unitTime
       }
-      getTopupData(query).then(response => {
+      getNumService(query).then(response => {
         const {
           data
         } = response
         const chartData = {
           xAxisLabel: [],
           data: [],
-          legend: '充值次数'
+          legend: '洗车服务量'
+        }
+        data.forEach(item => {
+          chartData.xAxisLabel.push(item.xAxisLabel)
+          chartData.data.push(item.data)
+        })
+        this.lineChartData = chartData
+      })
+    },
+    // 获取 充值金额 图表数据
+    summarizeSumTopup() {
+      const query = {
+        dateRange: this.dateRange,
+        groupBy: this.unitTime
+      }
+      getSumTopup(query).then(response => {
+        const {
+          data
+        } = response
+        const chartData = {
+          xAxisLabel: [],
+          data: [],
+          legend: '充值金额'
         }
         data.forEach(item => {
           chartData.xAxisLabel.push(item.xAxisLabel)
