@@ -27,8 +27,8 @@ export function updateBranch(branch) {
 export function listBranch(query) {
   return request({
     url: '/branch/list',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   })
 }
 

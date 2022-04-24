@@ -33,12 +33,16 @@
               <el-row>
                 <el-col :span="12">
                   <el-form-item label-width="60px" prop="branch_name" label="网点" class="postInfo-container-item">
-                    <el-select v-model="postForm.branch_name" placeholder="请选择" style="width:100%">
+                    <el-select
+                      v-model="postForm.branch_uid"
+                      placeholder="请选择"
+                      style="width:100%"
+                    >
                       <el-option
                         v-for="item in branchOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        :key="item.branch_uid"
+                        :label="item.branch_name"
+                        :value="item.branch_uid"
                       />
                     </el-select>
                   </el-form-item>
@@ -48,9 +52,9 @@
                     <el-select v-model="postForm.machine_status" placeholder="请选择" style="width:100%">
                       <el-option
                         v-for="item in statusOptions"
-                        :key="item.value"
-                        :label="item.label"
-                        :value="item.value"
+                        :key="item.status_id"
+                        :label="item.status"
+                        :value="item.status"
                       />
                     </el-select>
                   </el-form-item>
@@ -107,6 +111,7 @@ import { createMachine, getMachineOptions, getMachineById, updateMachine } from 
 const defaultForm = {
   machine_uid: '',
   machine_name: '',
+  branch_uid: '',
   branch_name: '',
   machine_status: '',
   longitude: '',
@@ -184,6 +189,7 @@ export default {
       this.postForm = {
         machine_uid: data.machine_uid,
         machine_name: data.machine_name,
+        branch_uid: data.branch_uid,
         branch_name: data.branch_name,
         machine_status: data.machine_status,
         longitude: data.longitude,
@@ -215,7 +221,17 @@ export default {
         if (valid) {
           this.loading = true
           const machine = Object.assign({}, this.postForm)
+
+          // 添加 mahcine 的 branch_name
+          this.branchOptions.forEach(item => {
+            if (item.branch_uid === machine.branch_uid) {
+              machine.branch_name = item.branch_name
+            }
+          })
+
           machine['region'] = this.selectedRegionsText
+
+          console.log('machine', machine)
 
           // 判断是首次登记还是更新记录
           if (!this.isEdit) { // 首次登记

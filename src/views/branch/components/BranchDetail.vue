@@ -17,8 +17,8 @@
             <el-row>
               <el-col :span="8">
                 <el-form-item style="margin-bottom: 40px; margin-right: 40px;" prop="branch_uid">
-                  <MDinput v-model="postForm.branch_uid" :maxlength="100" name="branch_uid" required>
-                    网点编号
+                  <MDinput v-model="postForm.branch_uid" :maxlength="100" name="branch_uid" required disabled>
+                    网点编号 (系统设定)
                   </MDinput>
                 </el-form-item>
               </el-col>
@@ -31,42 +31,47 @@
               </el-col>
             </el-row>
             <div class="postInfo-container">
-              <!-- 第 2 行 -->
+              <!-- 第 2 行 经度 纬度 -->
               <el-row>
-                <el-col :span="8">
+                <el-col :span="10">
                   <el-form-item label-width="60px" prop="longitude" label="经度" class="postInfo-container-item">
                     <el-input v-model="postForm.longitude" :rows="1" class="article-textarea" autosize placeholder="网点位置经度值" />
                   </el-form-item>
                 </el-col>
-                <el-col :span="8">
+                <el-col :span="10">
                   <el-form-item label-width="60px" prop="latitude" label="纬度" class="postInfo-container-item">
                     <el-input v-model="postForm.latitude" :rows="1" class="article-textarea" autosize placeholder="网点位置纬度值" />
                   </el-form-item>
                 </el-col>
               </el-row>
-              <!-- 第 3 行 -->
+              <!-- 第 3 行 行政区 -->
               <el-row>
-                <el-col :span="8">
-                  <el-form-item label-width="60px" prop="zip_code" label="邮编" class="postInfo-container-item">
-                    <el-input v-model="postForm.zip_code" :rows="1" class="article-textarea" autosize placeholder="网点所在地邮编" />
+                <el-col :span="10">
+                  <el-form-item
+                    label-width="60px"
+                    prop="region"
+                    label="地区"
+                    class="postInfo-container-item"
+                  >
+                    <el-cascader
+                      v-model="selectedRegionsCode"
+                      :options="regions"
+                      style="width: 100%;"
+                      @change="handleRegionSelect"
+                    />
                   </el-form-item>
                 </el-col>
-                <el-col :span="8">
-                  <el-form-item label-width="60px" prop="city_code" label="区号" class="postInfo-container-item">
-                    <el-input v-model="postForm.city_code" :rows="1" class="article-textarea" autosize placeholder="网点所在地区号" />
+                <el-col :span="10">
+                  <el-form-item label-width="60px" prop="address" label="地址" class="postInfo-container-item">
+                    <el-input v-model="postForm.address" :rows="1" class="article-textarea" autosize placeholder="网点所在地址全称" />
                   </el-form-item>
                 </el-col>
               </el-row>
               <!-- 第 4 行 -->
               <el-row>
-                <el-col :span="8">
-                  <el-form-item label-width="60px" prop="address" label="地址" class="postInfo-container-item">
-                    <el-input v-model="postForm.address" :rows="1" class="article-textarea" autosize placeholder="网点所在地址全称" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="8">
+                <el-col :span="10">
                   <el-form-item label-width="60px" prop="manager_name" label="负责人" class="postInfo-container-item">
-                    <el-select v-model="postForm.manager_name" placeholder="请选择">
+                    <el-select v-model="postForm.manager_name" placeholder="请选择" style="width: 100%;">
                       <el-option
                         v-for="item in managerOptions"
                         :key="item.value"
@@ -86,11 +91,20 @@
 </template>
 
 <script>
+/**
+ * 第三方包
+ */
+import { v1 as uuid_v1 } from 'uuid'
+import { regionData, CodeToText, TextToCode } from 'element-china-area-data'
+
+/**
+ * 组件
+ */
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 
 /**
- * API 组件
+ * API
  */
 import { createBranch, getBranchById, updateBranch, getBranchOptions } from '@/api/branch'
 
@@ -99,8 +113,6 @@ const defaultForm = {
   branch_name: '',
   longitude: '',
   latitude: '',
-  zip_code: '',
-  city_code: '',
   address: '',
   manager_name: ''
 }
@@ -142,15 +154,21 @@ export default {
         branch_name: [{ validator: validateRequire }],
         longitude: [{ validator: validateRequire }],
         latitude: [{ validator: validateRequire }],
-        zip_code: [{ validator: validateRequire }],
-        city_code: [{ validator: validateRequire }],
         address: [{ validator: validateRequire }],
         manager_name: [{ validator: validateRequire }]
       },
       /**
        * 表单项的下拉菜单选项
        */
-      managerOptions: []
+      managerOptions: [],
+
+      /**
+       * 省市区的下拉菜单选项
+       */
+      regions: regionData,
+      selectedRegionsCode: [],
+      regionKey: ['province', 'city', 'area'],
+      selectedRegionsText: {}
     }
   },
   computed: {},
@@ -163,6 +181,9 @@ export default {
   mounted() {
     // 数据库获取 operation 部分下拉形式表单项的数据
     this.setOptions()
+    if (!this.isEdit) { // [创建模式] 页面数据初始化
+      this.postForm.branch_uid = uuid_v1()
+    }
   },
   methods: {
     getBranchData(branch_uid) {
@@ -176,8 +197,6 @@ export default {
         branch_name,
         longitude,
         latitude,
-        zip_code,
-        city_code,
         address,
         manager_name
       } = data
@@ -186,11 +205,16 @@ export default {
         branch_name,
         longitude,
         latitude,
-        zip_code,
-        city_code,
         address,
         manager_name
       }
+
+      // 设置省市区的下拉菜单选项
+      this.selectedRegionsCode = [
+        TextToCode[data.province].code,
+        TextToCode[data.province][data.city].code,
+        TextToCode[data.province][data.city][data.area].code
+      ]
     },
     setOptions() {
       getBranchOptions().then(result => {
@@ -202,7 +226,12 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
+          /**
+           * Assemble branch data
+           */
           const branch = Object.assign({}, this.postForm)
+          branch['region'] = this.selectedRegionsText
+          console.log(branch)
 
           /**
            * 判断是添加新数据还是更新数据
@@ -241,6 +270,14 @@ export default {
           })
           return false
         }
+      })
+    },
+
+    // 省市区的下拉菜单选项 Code 转 Text
+    handleRegionSelect(value) {
+      this.selectedRegionsText = {}
+      value.forEach((element, index) => {
+        this.selectedRegionsText[this.regionKey[index]] = CodeToText[element]
       })
     }
   }

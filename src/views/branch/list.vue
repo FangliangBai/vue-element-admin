@@ -2,6 +2,7 @@
   <div class="app-container">
     <!-- 顶部搜索条件 -->
     <div class="filter-container">
+      <!-- 网点编号 -->
       <el-input
         v-model="listQuery.branch_uid"
         clearable
@@ -11,24 +12,15 @@
         @keyup.enter.native="handleFilter"
         @clear="handleFilter"
       />
-      <el-input
-        v-model="listQuery.zip_code"
-        clearable
-        placeholder="邮编"
-        style="width: 200px; margin-left: 10px"
+      <!-- 网点区域 -->
+      <el-cascader
+        v-model="listQuery.regionCode"
+        :options="regions"
         class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
-      />
-      <el-input
-        v-model="listQuery.city_code"
         clearable
-        placeholder="区号"
-        style="width: 200px; margin-left: 10px"
-        class="filter-item"
-        @keyup.enter.native="handleFilter"
-        @clear="handleFilter"
+        placeholder="设备所在区域"
       />
+      <!-- 按钮 -->
       <el-button
         class="filter-item"
         type="primary"
@@ -49,9 +41,22 @@
       </el-button>
     </div>
     <!-- 搜索结果列表 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
+    <el-table
+      :key="tableKey"
+      v-loading="listLoading"
+      :data="list"
+      border
+      fit
+      highlight-current-row
+      style="width: 100%;"
+    >
       <template v-for="(item, index) in tableHead">
-        <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
+        <el-table-column
+          :key="index"
+          :prop="item.field_name"
+          :label="item.label"
+          align="center"
+        />
       </template>
       <template v-if="show_action">
         <el-table-column label="操作" width="120" align="center" fixed="right">
@@ -68,6 +73,9 @@
 </template>
 
 <script>
+// 第三方包
+import { regionDataPlus } from 'element-china-area-data'
+
 import { listBranch, deleteBranch } from '@/api/branch'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 
@@ -86,14 +94,17 @@ export default {
       tableHead: [
         { field_name: 'branch_uid', label: '网点编号' },
         { field_name: 'branch_name', label: '网点名称' },
+        { field_name: 'manager_name', label: '负责人' },
         { field_name: 'longitude', label: '经度' },
         { field_name: 'latitude', label: '纬度' },
-        { field_name: 'zip_code', label: '邮编' },
-        { field_name: 'city_code', label: '区号' },
+        { field_name: 'province', label: '省级区' },
+        { field_name: 'city', label: '市级区' },
+        { field_name: 'area', label: '县级区' },
         { field_name: 'address', label: '详细地址' },
-        { field_name: 'manager_name', label: '负责人' }
       ],
-      show_action: true // 显示操作列
+      show_action: true, // 显示操作列
+      // 市区的下拉菜单选项
+      regions: regionDataPlus
     }
   },
   created() {

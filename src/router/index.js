@@ -366,6 +366,13 @@ export const asyncRoutes = [
         component: () => import('@/views/finance/tariff-edit'),
         meta: { title: '服务单价', icon: 'el-icon-info', roles: ['admin'] }
       },
+      // 充值表
+      {
+        name: 'TopupTariffEdit',
+        path: '/finance/topup-tariff',
+        component: () => import('@/views/finance/topup-tariff'),
+        meta: { title: '充值定价', icon: 'el-icon-money', roles: ['admin'] }
+      },
       /**
        * 客户信息
        */

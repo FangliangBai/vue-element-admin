@@ -2,15 +2,31 @@
   <div class="app-container">
     <!-- 顶部搜索条件 -->
     <div class="filter-container">
-      <txt class="filter-item">统计分类</txt>
+      <txt class="filter-item">单位</txt>
       <el-select
         v-model="listQuery.groupBy"
-        placeholder="统计分类"
         class="filter-item"
+        clearable
+        placeholder="请选择统计单位"
       >
-        <el-option v-for="item in groupByOptions" :key="item.value" :label="item.label" :value="item.value" />
+        <el-option
+          v-for="item in groupByOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
       </el-select>
-      <txt class="filter-item">消费时段</txt>
+
+      <txt class="filter-item">区域</txt>
+      <el-cascader
+        v-model="listQuery.regionCode"
+        :options="regions"
+        class="filter-item"
+        clearable
+        placeholder="请选择统计区域"
+      />
+
+      <txt class="filter-item">时段</txt>
       <el-date-picker
         v-model="listQuery.dateRange"
         value-format="yyyy-MM-dd"
@@ -21,6 +37,8 @@
         clearable
         class="filter-item"
       />
+
+      <!-- [按钮] 查询 -->
       <el-button
         class="filter-item"
         type="primary"
@@ -29,6 +47,8 @@
       >
         查询
       </el-button>
+
+      <!-- [按钮] 导出 -->
       <el-button
         class="filter-item"
         type="primary"
@@ -39,6 +59,7 @@
         导出
       </el-button>
     </div>
+
     <!-- 结果列表 -->
     <el-table
       :key="tableKey"
@@ -49,70 +70,6 @@
       style="width: 100%;"
       @sort-change="handleSortChange"
     >
-      <el-table-column
-        type="expand"
-      >
-        <template slot-scope="props">
-          <el-row :gutter="20">
-            <el-col :span="12">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="冲水时长: ">
-                  <span>{{ props.row.service_time.water }} 秒</span>
-                </el-form-item>
-                <el-form-item label="打沫时长: ">
-                  <span>{{ props.row.service_time.froth }} 秒</span>
-                </el-form-item>
-                <el-form-item label="吸尘时长: ">
-                  <span>{{ props.row.service_time.hoover }} 秒</span>
-                </el-form-item>
-                <el-form-item label="臭氧时长: ">
-                  <span>{{ props.row.service_time.ozone }} 秒</span>
-                </el-form-item>
-                <el-form-item label="吹风时长: ">
-                  <span>{{ props.row.service_time.blower }} 秒</span>
-                </el-form-item>
-                <el-form-item label="热风时长: ">
-                  <span>{{ props.row.service_time.dryer }} 秒</span>
-                </el-form-item>
-                <el-form-item label="暂停时长: ">
-                  <span>{{ props.row.service_time.pause }} 秒</span>
-                </el-form-item>
-                <el-form-item label="水龙头时长: ">
-                  <span>{{ props.row.service_time.tap }} 秒</span>
-                </el-form-item>
-              </el-form>
-            </el-col>
-            <el-col :span="12">
-              <el-form label-position="left" inline class="demo-table-expand">
-                <el-form-item label="冲水消费: ">
-                  <span>{{ props.row.service_cost.water }} 元</span>
-                </el-form-item>
-                <el-form-item label="打沫消费: ">
-                  <span>{{ props.row.service_cost.froth }} 元</span>
-                </el-form-item>
-                <el-form-item label="吸尘消费: ">
-                  <span>{{ props.row.service_cost.hoover }} 元</span>
-                </el-form-item>
-                <el-form-item label="臭氧消费: ">
-                  <span>{{ props.row.service_cost.ozone }} 元</span>
-                </el-form-item>
-                <el-form-item label="吹风消费: ">
-                  <span>{{ props.row.service_cost.blower }} 元</span>
-                </el-form-item>
-                <el-form-item label="热风消费: ">
-                  <span>{{ props.row.service_cost.dryer }} 元</span>
-                </el-form-item>
-                <el-form-item label="暂停消费: ">
-                  <span>{{ props.row.service_cost.pause }} 元</span>
-                </el-form-item>
-                <el-form-item label="水龙头消费: ">
-                  <span>{{ props.row.service_cost.tap }} 元</span>
-                </el-form-item>
-              </el-form>
-            </el-col>
-          </el-row>
-        </template>
-      </el-table-column>
       <template v-for="(item, index) in tableHead">
         <el-table-column
           :key="index"
@@ -123,6 +80,7 @@
         />
       </template>
     </el-table>
+
     <!-- 分页组件 -->
     <pagination
       v-show="total>0"
@@ -135,8 +93,12 @@
 </template>
 
 <script>
+// 第三方包
+import { regionDataPlus } from 'element-china-area-data'
+// 组件
 import Pagination from '@/components/Pagination'
-import { washedNumGroupByMachine, washedNumGroupByBranch, washedNumGroupByCityCode, washedAll } from './utils/table-config'
+// API
+import { washedNumGroupByMachine, washedNumGroupByBranch } from './utils/table-config'
 import { listWashedOrder } from '@/api/finance'
 
 export default {
@@ -163,16 +125,12 @@ export default {
         {
           value: 'branch_name',
           label: '网点'
-        },
-        {
-          value: 'city_code',
-          label: '区号'
-        },
-        {
-          value: 'all',
-          label: '全部'
         }
       ],
+
+      // 区域下拉菜单选项
+      regions: regionDataPlus,
+
       /**
        * 表格相关设置参数
        */
@@ -227,6 +185,7 @@ export default {
      * 请求表格数据, 赋值给组件 data
      */
     getList() {
+      console.log('listQuery', this.listQuery)
       this.listLoading = true
       listWashedOrder(this.listQuery).then(response => {
         const {

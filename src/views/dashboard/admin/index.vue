@@ -7,6 +7,7 @@
     <el-tabs v-model="activeName" type="border-card">
       <el-tab-pane label="消费金额" name="消费金额">
         <el-card class="box-card" style="margin-bottom:10px;">
+          <!-- 时间段 -->
           <el-date-picker
             v-model="dateRange"
             value-format="yyyy-MM-dd"
@@ -16,6 +17,8 @@
             end-placeholder="结束日期"
             clearable
           />
+
+          <!-- 统计单位 -->
           <el-select
             v-model="unitTime"
             placeholder="请选择统计时间单位"
@@ -28,6 +31,17 @@
               :value="item.value"
             />
           </el-select>
+
+          <!-- 统计区域 -->
+          <el-cascader
+            v-model="regionCode"
+            :options="regions"
+            style="margin-left: 10px;"
+            clearable
+            placeholder="统计区域"
+          />
+
+          <!-- 按钮 -->
           <el-button
             class="filter-item"
             type="primary"
@@ -42,6 +56,7 @@
 
       <el-tab-pane label="洗车服务量" name="洗车服务量">
         <el-card class="box-card" style="margin-bottom:10px;">
+          <!-- 时间段 -->
           <el-date-picker
             v-model="dateRange"
             value-format="yyyy-MM-dd"
@@ -51,6 +66,8 @@
             end-placeholder="结束日期"
             clearable
           />
+
+          <!-- 统计单位 -->
           <el-select
             v-model="unitTime"
             placeholder="请选择统计时间单位"
@@ -63,6 +80,16 @@
               :value="item.value"
             />
           </el-select>
+
+          <!-- 统计区域 -->
+          <el-cascader
+            v-model="regionCode"
+            :options="regions"
+            style="margin-left: 10px;"
+            clearable
+            placeholder="统计区域"
+          />
+
           <el-button
             class="filter-item"
             type="primary"
@@ -77,6 +104,7 @@
 
       <el-tab-pane label="充值金额" name="充值金额">
         <el-card class="box-card" style="margin-bottom:10px;">
+          <!-- 时间段 -->
           <el-date-picker
             v-model="dateRange"
             value-format="yyyy-MM-dd"
@@ -86,6 +114,8 @@
             end-placeholder="结束日期"
             clearable
           />
+
+          <!-- 统计单位 -->
           <el-select
             v-model="unitTime"
             placeholder="请选择统计时间单位"
@@ -98,6 +128,16 @@
               :value="item.value"
             />
           </el-select>
+
+          <!-- 统计区域 -->
+          <el-cascader
+            v-model="regionCode"
+            :options="regions"
+            style="margin-left: 10px;"
+            clearable
+            placeholder="统计区域"
+          />
+
           <el-button
             class="filter-item"
             type="primary"
@@ -119,8 +159,12 @@
 </template>
 
 <script>
+// 第三方包
+import { regionDataPlus } from 'element-china-area-data'
+// 组件
 import PanelGroup from './components/PanelGroup'
 import LineChart from './components/LineChart'
+// API
 import { getSumService, getNumService, getSumTopup } from '@/api/dashboard'
 
 export default {
@@ -152,10 +196,16 @@ export default {
         value: 'year',
         label: '年汇总'
       }],
-      unitTime: 'day'
+      unitTime: 'day',
+      /**
+       * 省市区的下拉菜单选项
+       */
+      regions: regionDataPlus,
+      regionCode: ['']
     }
   },
   mounted() {
+    // 初始化查询条件
     const end = new Date()
     const start = new Date()
     start.setMonth(start.getMonth() - 6)
@@ -167,7 +217,8 @@ export default {
     summarizeSumService() {
       const query = {
         dateRange: this.dateRange,
-        groupBy: this.unitTime
+        groupBy: this.unitTime,
+        regionCode: this.regionCode
       }
       getSumService(query).then(response => {
         const {
@@ -190,7 +241,8 @@ export default {
     summarizeNumService() {
       const query = {
         dateRange: this.dateRange,
-        groupBy: this.unitTime
+        groupBy: this.unitTime,
+        regionCode: this.regionCode
       }
       getNumService(query).then(response => {
         const {
@@ -208,11 +260,13 @@ export default {
         this.lineChartData = chartData
       })
     },
+
     // 获取 充值金额 图表数据
     summarizeSumTopup() {
       const query = {
         dateRange: this.dateRange,
-        groupBy: this.unitTime
+        groupBy: this.unitTime,
+        regionCode: this.regionCode
       }
       getSumTopup(query).then(response => {
         const {

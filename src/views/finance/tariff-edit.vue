@@ -1,182 +1,198 @@
 <template>
   <div class="createPost-container">
+
+    <!-- 吸顶按钮组 -->
+    <sticky :z-index="1" :class-name="'sub-navbar '+'published'">
+      <el-button v-loading="loading" icon="el-icon-success" style="margin-left: 10px;" type="success" @click="submitForm">
+        设定
+      </el-button>
+    </sticky>
+
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
-
-      <!-- 吸顶按钮组 -->
-      <sticky :z-index="10" :class-name="'sub-navbar '+'published'">
-        <el-button v-loading="loading" icon="el-icon-success" style="margin-left: 10px;" type="success" @click="submitForm">
-          设定
-        </el-button>
-      </sticky>
-
       <!-- 表单项目 -->
-      <div class="createPost-main-container">
-        <el-row>
-          <aside>服务单价设置 (元/10秒)</aside>
+      <aside> 网点价格设定 </aside>
 
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="冲水：" prop="price_water" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.price_water" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="7">
-              <el-form-item label="打沫：" prop="price_froth" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.price_froth" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="7">
-              <el-form-item label="吸尘：" prop="price_hoover" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.price_hoover" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="臭氧：" prop="price_ozone" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.price_ozone" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="7">
-              <el-form-item label="吹风：" prop="price_blower" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.price_blower" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="7">
-              <el-form-item label="热风：" prop="price_dryer" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.price_dryer" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="水龙头：" prop="price_tap" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.price_tap" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+      <!-- [选择器] 网点 -->
+      <el-select
+        v-model="selected_branch_uid"
+        placeholder="请选择网点"
+        clearable
+        filterable
+        style="margin-left: 10px;"
+        @change="getBranchTariff()"
+      >
+        <el-option
+          v-for="item in branchOptions"
+          :key="item.branch_uid"
+          :label="item.branch_name"
+          :value="item.branch_uid"
+        />
+      </el-select>
 
-          <aside>暂停设置 (元/10秒)</aside>
+      <el-divider><i class="el-icon-s-tools" /> 服务单价设置 (元/10秒) </el-divider>
+      <el-row>
+        <el-col :span="7">
+          <el-form-item label="冲水：" prop="price_water" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_water" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="打沫：" prop="price_froth" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_froth" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="吸尘：" prop="price_hoover" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_hoover" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="7">
+          <el-form-item label="臭氧：" prop="price_ozone" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_ozone" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="吹风：" prop="price_blower" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_blower" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="热风：" prop="price_dryer" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_dryer" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="7">
+          <el-form-item label="水龙头：" prop="price_tap" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_tap" />
+          </el-form-item>
+        </el-col>
+      </el-row>
 
-          <el-row>
-            <el-col :span="7">
-              <el-form-item label="暂停超时计费：" prop="price_pause" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.price_pause" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="7">
-              <el-form-item label="免费暂停时长 (秒)：" prop="free_pause_time" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.free_pause_time" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+      <el-divider><i class="el-icon-s-tools" /> 暂停设置 (元/10秒) </el-divider>
 
-          <aside>服务次数设置 (次)</aside>
+      <el-row>
+        <el-col :span="7">
+          <el-form-item label="暂停超时计费：" prop="price_pause" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_pause" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="7">
+          <el-form-item label="免费暂停时长 (秒)：" prop="free_pause_time" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.free_pause_time" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+      </el-row>
 
-          <el-row style="margin: 20px;">
-            说明：次数设置为 -1 时，表示不限制次数。
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="冲水：" prop="quantity_water" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.quantity_water" placeholder="次数" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="打沫：" prop="quantity_froth" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.quantity_froth" placeholder="次数" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="吸尘：" prop="quantity_hoover" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.quantity_hoover" placeholder="次数" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="臭氧：" prop="quantity_ozone" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.quantity_ozone" placeholder="次数" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="吹风：" prop="quantity_blower" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.quantity_blower" placeholder="次数" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="热风：" prop="quantity_dryer" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.quantity_dryer" placeholder="次数" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="水龙头：" prop="quantity_tap" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.quantity_tap" placeholder="次数" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="暂停：" prop="quantity_pause" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.quantity_pause" placeholder="次数" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+      <el-divider><i class="el-icon-s-tools" /> 服务次数设置 (次) </el-divider>
 
-          <aside>单次服务时限设置 (秒)</aside>
+      <el-row style="margin: 20px;">
+        说明：次数设置为 -1 时，表示不限制次数。
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="冲水：" prop="quantity_water" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.quantity_water" placeholder="次数" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="打沫：" prop="quantity_froth" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.quantity_froth" placeholder="次数" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="吸尘：" prop="quantity_hoover" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.quantity_hoover" placeholder="次数" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="臭氧：" prop="quantity_ozone" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.quantity_ozone" placeholder="次数" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="吹风：" prop="quantity_blower" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.quantity_blower" placeholder="次数" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="热风：" prop="quantity_dryer" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.quantity_dryer" placeholder="次数" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="水龙头：" prop="quantity_tap" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.quantity_tap" placeholder="次数" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="暂停：" prop="quantity_pause" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.quantity_pause" placeholder="次数" />
+          </el-form-item>
+        </el-col>
+      </el-row>
 
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="冲水：" prop="time_limit_water" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.time_limit_water" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="打沫：" prop="time_limit_froth" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.time_limit_froth" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="吸尘：" prop="time_limit_hoover" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.time_limit_hoover" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="臭氧：" prop="time_limit_ozone" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.time_limit_ozone" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-          </el-row>
-          <el-row>
-            <el-col :span="6">
-              <el-form-item label="吹风：" prop="time_limit_blower" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.time_limit_blower" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="热风：" prop="time_limit_dryer" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.time_limit_dryer" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="水龙头：" prop="time_limit_tap" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.time_limit_tap" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-            <el-col :span="6">
-              <el-form-item label="暂停：" prop="time_limit_pause" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
-                <el-input v-model="postForm.time_limit_pause" placeholder="秒" />
-              </el-form-item>
-            </el-col>
-          </el-row>
+      <el-divider><i class="el-icon-s-tools" /> 单次服务时限设置 (秒) </el-divider>
 
-        </el-row>
-      </div>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="冲水：" prop="time_limit_water" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.time_limit_water" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="打沫：" prop="time_limit_froth" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.time_limit_froth" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="吸尘：" prop="time_limit_hoover" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.time_limit_hoover" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="臭氧：" prop="time_limit_ozone" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.time_limit_ozone" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="吹风：" prop="time_limit_blower" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.time_limit_blower" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="热风：" prop="time_limit_dryer" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.time_limit_dryer" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="水龙头：" prop="time_limit_tap" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.time_limit_tap" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="暂停：" prop="time_limit_pause" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.time_limit_pause" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
+
   </div>
 </template>
 
 <script>
+// 组件
 import Sticky from '@/components/Sticky'
-import { getTariff, updateTariff } from '@/api/finance'
+// API
+import { getTariff, updateTariff, getBranchOptions } from '@/api/finance'
 
 const defaultForm = {
   price_water: '',
@@ -244,20 +260,48 @@ export default {
         price_pause: [{ validator: validateRequire }],
         price_tap: [{ validator: validateRequire }],
         free_pause_time: [{ validator: validateRequire }]
-      }
+      },
+
+      // 网点选择器
+      branchOptions: [],
+      selected_branch_uid: ''
     }
   },
   created() {
-    this.getData()
+    // 获取网点选项
+    this.getBranchOptions()
   },
   methods: {
-    // 从数据库获取表单信息
-    getData() {
-      getTariff().then(response => {
-        this.setData(response.data)
+    // 获取网点列表
+    getBranchOptions() {
+      getBranchOptions().then(res => {
+        this.branchOptions = res.data
       })
     },
-    // 数据库消息填入表单
+
+    // 从数据库获取表单信息
+    getBranchTariff() {
+      getTariff(this.selected_branch_uid).then(response => {
+        if (response.data) {
+          this.setData(response.data)
+          this.$notify({
+            title: '加载价目表成功',
+            message: '已查询到本网点设置的服务价格',
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: '暂无预设价格',
+            message: '请设置此网点的服务价格',
+            type: 'success',
+            duration: 2000
+          })
+        }
+      })
+    },
+
+    // 数据库信息填入表单
     setData(data) {
       this.postForm = {
         price_water: data.price_water,
@@ -287,12 +331,17 @@ export default {
         time_limit_pause: data.time_limit_pause
       }
     },
+
     // 更新信息到数据库
     submitForm() {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
           const tariff = Object.assign({}, this.postForm)
+
+          // 更新前 Tariff 加上 branch_uid
+          tariff.branch_uid = this.selected_branch_uid
+
           updateTariff(tariff).then(() => {
             this.loading = false
             this.$notify({

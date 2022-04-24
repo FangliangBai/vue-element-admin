@@ -106,16 +106,45 @@ export function deleteOperation(operation_uid) {
  * 价目表 相关 API
  */
 
-export function getTariff() {
+export function getBranchOptions() {
+  return request({
+    url: '/finance/get-branch-options',
+    method: 'get'
+  })
+}
+
+export function getTariff(branch_uid) {
   return request({
     url: '/finance/get-tariff',
-    method: 'get'
+    method: 'post',
+    data: {
+      branch_uid
+    }
   })
 }
 
 export function updateTariff(tariff) {
   return request({
     url: '/finance/update-tariff',
+    method: 'post',
+    data: tariff
+  })
+}
+
+// 充值定价 相关 API
+export function getTopupTariff(branch_uid) {
+  return request({
+    url: '/finance/get-topup-tariff',
+    method: 'post',
+    data: {
+      branch_uid
+    }
+  })
+}
+
+export function updateTopupTariff(tariff) {
+  return request({
+    url: '/finance/update-topup-tariff',
     method: 'post',
     data: tariff
   })
@@ -140,8 +169,8 @@ export function listCustomer(query) {
 export function listWashedOrder(query) {
   return request({
     url: '/finance/list-washed-order',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   })
 }
 

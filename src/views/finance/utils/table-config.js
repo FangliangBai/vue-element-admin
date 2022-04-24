@@ -144,39 +144,26 @@ const washedNumGroupByMachine = {
   tableHead: [
     { field_name: 'machine_uid', label: '设备 ID' },
     { field_name: 'branch_name', label: '网点名称' },
-    { field_name: 'city_code', label: '区号' },
+    { field_name: 'province', label: '省区' },
+    { field_name: 'city', label: '市区' },
+    { field_name: 'area', label: '县区' },
     { field_name: 'count', label: '洗车量' },
     { field_name: 'cost_rmb', label: '人民币消费' },
-    { field_name: 'cost_coin', label: '洗车币消费' }
+    { field_name: 'cost_coin', label: '洗车币消费' },
+    { field_name: 'cost_all', label: '总消费' }
   ]
 }
 
 const washedNumGroupByBranch = {
   tableHead: [
     { field_name: 'branch_name', label: '网点名称' },
-    { field_name: 'city_code', label: '区号' },
+    { field_name: 'province', label: '省区' },
+    { field_name: 'city', label: '市区' },
+    { field_name: 'area', label: '县区' },
     { field_name: 'count', label: '洗车量' },
     { field_name: 'cost_rmb', label: '人民币消费' },
-    { field_name: 'cost_coin', label: '洗车币消费' }
-  ]
-}
-
-const washedNumGroupByCityCode = {
-  tableHead: [
-    { field_name: 'city_code', label: '区号' },
-    { field_name: 'count', label: '洗车量' },
-    { field_name: 'cost_rmb', label: '人民币消费' },
-    { field_name: 'cost_coin', label: '洗车币消费' }
-  ]
-}
-
-const washedAll = {
-  tableHead: [
-    { field_name: 'machine_uid', label: '设备 ID' },
-    { field_name: 'branch_name', label: '网点名称' },
-    { field_name: 'city_code', label: '区号' },
-    { field_name: 'order_time', label: '洗车时间' },
-    { field_name: 'order_cost', label: '消费金额 (元)' }
+    { field_name: 'cost_coin', label: '洗车币消费' },
+    { field_name: 'cost_all', label: '总消费' }
   ]
 }
 
@@ -191,7 +178,5 @@ module.exports = {
   operationGroupByBranch,
   // washed-order-list 页面 table
   washedNumGroupByMachine,
-  washedNumGroupByBranch,
-  washedNumGroupByCityCode,
-  washedAll
+  washedNumGroupByBranch
 }
