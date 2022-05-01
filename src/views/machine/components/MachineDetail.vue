@@ -15,8 +15,8 @@
             <el-row>
               <el-col :span="12">
                 <el-form-item style="margin-bottom: 40px; margin-right: 40px;" prop="machine_uid">
-                  <MDinput v-model="postForm.machine_uid" :maxlength="100" name="machine_uid" required>
-                    洗车机编号
+                  <MDinput v-model="postForm.machine_uid" :maxlength="100" name="machine_uid" required disabled>
+                    洗车机编号 (系统设定)
                   </MDinput>
                 </el-form-item>
               </el-col>
@@ -63,19 +63,6 @@
               <!-- 第 3 行 -->
               <el-row>
                 <el-col :span="12">
-                  <el-form-item label-width="60px" prop="longitude" label="经度" class="postInfo-container-item">
-                    <el-input v-model="postForm.longitude" placeholder="洗车机位置经度值" class="article-textarea" />
-                  </el-form-item>
-                </el-col>
-                <el-col :span="12">
-                  <el-form-item label-width="60px" prop="latitude" label="纬度" class="postInfo-container-item">
-                    <el-input v-model="postForm.latitude" placeholder="洗车机位置纬度值" class="article-textarea" />
-                  </el-form-item>
-                </el-col>
-              </el-row>
-              <!-- 第 4 行 -->
-              <el-row>
-                <el-col :span="12">
                   <el-form-item label-width="60px" prop="region" label="地区" class="postInfo-container-item">
                     <el-cascader
                       v-model="selectedRegionsCode"
@@ -100,12 +87,13 @@
 </template>
 
 <script>
+// npm 包
+import { v1 as uuid_v1 } from 'uuid'
+// 组件
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 import { regionData, CodeToText, TextToCode } from 'element-china-area-data'
-/**
- * API 组件
- */
+// API
 import { createMachine, getMachineOptions, getMachineById, updateMachine } from '@/api/machine'
 
 const defaultForm = {
@@ -114,8 +102,6 @@ const defaultForm = {
   branch_uid: '',
   branch_name: '',
   machine_status: '',
-  longitude: '',
-  latitude: '',
   address: ''
 }
 
@@ -141,10 +127,7 @@ export default {
       loading: false,
       rules: {
         machine_uid: [{ validator: validateRequire }],
-        machine_name: [{ validator: validateRequire }],
-        branch_name: [{ validator: validateRequire }],
-        longitude: [{ validator: validateRequire }],
-        latitude: [{ validator: validateRequire }]
+        machine_name: [{ validator: validateRequire }]
       },
       /**
        * 表单项的下拉菜单选项
@@ -170,6 +153,10 @@ export default {
   mounted() {
     // 数据库获取 operation 部分下拉形式表单项的数据
     this.setOptions()
+
+    if (!this.isEdit) { // [创建模式] 页面数据初始化
+      this.postForm.machine_uid = uuid_v1()
+    }
   },
   methods: {
     /**
@@ -192,8 +179,6 @@ export default {
         branch_uid: data.branch_uid,
         branch_name: data.branch_name,
         machine_status: data.machine_status,
-        longitude: data.longitude,
-        latitude: data.latitude,
         address: data.address
       }
       // 单独设置省市区的下拉菜单选项

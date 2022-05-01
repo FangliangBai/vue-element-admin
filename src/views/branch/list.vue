@@ -45,7 +45,6 @@
       :key="tableKey"
       v-loading="listLoading"
       :data="list"
-      border
       fit
       highlight-current-row
       style="width: 100%;"
@@ -100,7 +99,7 @@ export default {
         { field_name: 'province', label: '省级区' },
         { field_name: 'city', label: '市级区' },
         { field_name: 'area', label: '县级区' },
-        { field_name: 'address', label: '详细地址' },
+        { field_name: 'address', label: '详细地址' }
       ],
       show_action: true, // 显示操作列
       // 市区的下拉菜单选项
