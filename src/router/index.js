@@ -173,7 +173,7 @@ export const asyncRoutes = [
         name: 'AdminUserList',
         path: '/admin-user/list',
         component: () => import('@/views/admin-user/list'),
-        meta: { title: '平台管理员', icon: 'list', roles: ['admin'] }
+        meta: { title: '平台管理员', icon: 'list', roles: ['admin'], noCache: true }
       },
       {
         name: 'CreateAdminUser',
@@ -194,7 +194,7 @@ export const asyncRoutes = [
         name: 'MaintainerList',
         path: '/admin-user/maintainer-list',
         component: () => import('@/views/admin-user/maintainer-list'),
-        meta: { title: '设备维修人', icon: 'list', roles: ['admin'] }
+        meta: { title: '设备维修人', icon: 'list', roles: ['admin'], noCache: true }
       },
       {
         name: 'MaintainerCreate',
@@ -215,7 +215,7 @@ export const asyncRoutes = [
         name: 'ManagerList',
         path: '/admin-user/manager-list',
         component: () => import('@/views/admin-user/manager-list'),
-        meta: { title: '网点负责人', icon: 'list', roles: ['admin'] }
+        meta: { title: '网点负责人', icon: 'list', roles: ['admin'], noCache: true }
       },
       {
         name: 'ManagerCreate',
@@ -261,7 +261,7 @@ export const asyncRoutes = [
         name: 'MachineList',
         path: '/machine/list',
         component: () => import('@/views/machine/list'),
-        meta: { title: '设备列表', icon: 'component', roles: ['admin'] }
+        meta: { title: '设备列表', icon: 'component', roles: ['admin'], noCache: true }
       }
     ]
   },
@@ -293,7 +293,7 @@ export const asyncRoutes = [
         name: 'BranchList',
         path: '/branch/list',
         component: () => import('@/views/branch/list'),
-        meta: { title: '网点列表', icon: 'tree', roles: ['admin'] }
+        meta: { title: '网点列表', icon: 'tree', roles: ['admin'], noCache: true }
       }
     ]
   },
@@ -318,7 +318,7 @@ export const asyncRoutes = [
         name: 'MaintainList',
         path: '/finance/maintain-list',
         component: () => import('@/views/finance/maintain-list'),
-        meta: { title: '维修费用', icon: 'el-icon-s-open', roles: ['admin'] }
+        meta: { title: '维修费用', icon: 'el-icon-s-open', roles: ['admin'], noCache: true }
       },
       {
         name: 'MaintainCreate',
@@ -341,7 +341,7 @@ export const asyncRoutes = [
         name: 'OperationList',
         path: '/finance/operation-list',
         component: () => import('@/views/finance/operation-list'),
-        meta: { title: '运营费用', icon: 'el-icon-s-shop', roles: ['admin'] }
+        meta: { title: '运营费用', icon: 'el-icon-s-shop', roles: ['admin'], noCache: true }
       },
       {
         name: 'OperationCreate',
@@ -380,7 +380,7 @@ export const asyncRoutes = [
         name: 'CustomerList',
         path: '/finance/customer-list',
         component: () => import('@/views/finance/customer-list'),
-        meta: { title: '客户明细', icon: 'peoples', roles: ['admin'] }
+        meta: { title: '客户明细', icon: 'peoples', roles: ['admin'], noCache: true }
       },
       /**
        * 运营统计
@@ -389,13 +389,13 @@ export const asyncRoutes = [
         name: 'WashedOrderList',
         path: '/finance/washed-order-list',
         component: () => import('@/views/finance/washed-order-list'),
-        meta: { title: '消费统计', icon: 'shopping', roles: ['admin'] }
+        meta: { title: '消费统计', icon: 'shopping', roles: ['admin'], noCache: true }
       },
       {
         name: 'TopupOrderList',
         path: '/finance/topup-order-list',
         component: () => import('@/views/finance/topup-order-list'),
-        meta: { title: '充值统计', icon: 'el-icon-s-finance', roles: ['admin'] }
+        meta: { title: '充值统计', icon: 'el-icon-s-finance', roles: ['admin'], noCache: true }
       }
     ]
   },
@@ -419,21 +419,21 @@ export const asyncRoutes = [
         name: 'OrderTopup',
         path: '/order-manage/order-topup',
         component: () => import('@/views/order-manage/order-topup'),
-        meta: { title: '充值订单', icon: 'el-icon-s-finance', roles: ['admin'] }
+        meta: { title: '充值订单', icon: 'el-icon-s-finance', roles: ['admin'], noCache: true }
       },
       // 退款订单
       {
         name: 'OrderRefund',
         path: '/order-manage/order-refund',
         component: () => import('@/views/order-manage/order-refund'),
-        meta: { title: '退款订单', icon: 'el-icon-s-finance', roles: ['admin'] }
+        meta: { title: '退款订单', icon: 'el-icon-s-finance', roles: ['admin'], noCache: true }
       },
       // 洗车订单
       {
         name: 'OrderWashed',
         path: '/order-manage/order-washed',
         component: () => import('@/views/order-manage/order-washed'),
-        meta: { title: '洗车订单', icon: 'el-icon-s-claim', roles: ['admin'] }
+        meta: { title: '洗车订单', icon: 'el-icon-s-claim', roles: ['admin'], noCache: true }
       }
     ]
   },

@@ -2,6 +2,15 @@
   <div class="app-container">
     <!-- 顶部搜索条件 -->
     <div class="filter-container">
+      <txt class="filter-item">区域</txt>
+      <el-cascader
+        v-model="listQuery.regionCode"
+        :options="regions"
+        class="filter-item"
+        clearable
+        placeholder="请选择统计区域"
+      />
+
       <txt class="filter-item">充值时段</txt>
       <el-date-picker
         v-model="listQuery.dateRange"
@@ -13,6 +22,7 @@
         clearable
         class="filter-item"
       />
+
       <el-button
         class="filter-item"
         type="primary"
@@ -33,7 +43,7 @@
       </el-button>
     </div>
     <!-- 搜索结果列表 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row style="width: 100%;">
       <template v-for="(item, index) in tableHead">
         <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
       </template>
@@ -50,7 +60,11 @@
 </template>
 
 <script>
+// npm 包
+import { regionDataPlus } from 'element-china-area-data'
+// 组件
 import Pagination from '@/components/Pagination'
+// API
 import { ListTopupOrder } from '@/api/finance'
 
 export default {
@@ -65,14 +79,20 @@ export default {
       listLoading: true, // 表格 loading 动画
       listQuery: {}, // 查询条件
       dateRange: '', // 查询时间范围 格式：[ "2021-12-01", "2022-01-03" ]
+
+      // 区域下拉菜单选项
+      regions: regionDataPlus,
+
       // 表头数据
       tableHead: [
-        { field_name: 'topup_uid', label: '订单号' },
-        { field_name: 'customer_openid', label: '客户编号' },
-        { field_name: 'topup_time', label: '充值时间' },
+        { field_name: 'branch_name', label: '网点名称' },
+        { field_name: 'province', label: '省区' },
+        { field_name: 'city', label: '市区' },
+        { field_name: 'area', label: '县区' },
         { field_name: 'topup_rmb', label: '人民币充值' },
         { field_name: 'topup_coin', label: '洗车币充值' },
-        { field_name: 'topup_coin_bonus', label: '赠送洗车币' }
+        { field_name: 'topup_coin_bonus', label: '赠送洗车币' },
+        { field_name: 'topup_all', label: '总充值' }
       ]
     }
   },

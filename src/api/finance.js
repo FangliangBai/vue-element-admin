@@ -177,7 +177,7 @@ export function listWashedOrder(query) {
 export function ListTopupOrder(query) {
   return request({
     url: '/finance/list-topup-order',
-    method: 'get',
-    params: query
+    method: 'post',
+    data: query
   })
 }
