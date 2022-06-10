@@ -438,6 +438,18 @@ export const asyncRoutes = [
     ]
   },
 
+  // 大屏展示
+  {
+    path: 'external-link',
+    component: Layout,
+    children: [
+      {
+        path: 'http://49.233.11.217/big-screen/',
+        meta: { title: '智慧大屏', icon: 'el-icon-data-line' }
+      }
+    ]
+  },
+
   /**
    * Default Routes
    */
