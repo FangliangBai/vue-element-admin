@@ -10,24 +10,50 @@
 
     <el-form ref="postForm" :model="postForm" :rules="rules" class="form-container">
       <!-- 表单项目 -->
-      <aside> 网点价格设定 </aside>
+      <el-divider><i class="el-icon-s-tools" /> 网点选择 </el-divider>
 
       <!-- [选择器] 网点 -->
-      <el-select
-        v-model="selected_branch_uid"
-        placeholder="请选择网点"
-        clearable
-        filterable
-        style="margin-left: 10px;"
-        @change="getBranchTariff()"
-      >
-        <el-option
-          v-for="item in branchOptions"
-          :key="item.branch_uid"
-          :label="item.branch_name"
-          :value="item.branch_uid"
-        />
-      </el-select>
+      <el-row>
+        <el-col :span="8">
+          <el-form-item label="网点：" prop="branch" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-select
+              v-model="selected_branch_uid[0]"
+              placeholder="请选择网点"
+              clearable
+              filterable
+              style="margin-left: 10px; width: 95%;"
+              @change="getBranchTariff()"
+              @clear="() => {selected_branch_uid.shift()}"
+            >
+              <el-option
+                v-for="item in branchOptions"
+                :key="item.branch_uid"
+                :label="item.branch_name"
+                :value="item.branch_uid"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+        <el-col :span="16">
+          <el-form-item label="批量定价网点：" prop="branch-follow" label-width="120px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-select
+              v-model="selected_branch_uid"
+              placeholder="请选择跟设网点"
+              clearable
+              filterable
+              multiple
+              style="margin-left: 10px; width: 95%;"
+            >
+              <el-option
+                v-for="item in branchOptions"
+                :key="item.branch_uid"
+                :label="item.branch_name"
+                :value="item.branch_uid"
+              />
+            </el-select>
+          </el-form-item>
+        </el-col>
+      </el-row>
 
       <el-divider><i class="el-icon-s-tools" /> 服务单价设置 (元/10秒) </el-divider>
       <el-row>
@@ -264,7 +290,8 @@ export default {
 
       // 网点选择器
       branchOptions: [],
-      selected_branch_uid: ''
+      selected_branch_uid: []
+
     }
   },
   created() {
@@ -281,24 +308,26 @@ export default {
 
     // 从数据库获取表单信息
     getBranchTariff() {
-      getTariff(this.selected_branch_uid).then(response => {
-        if (response.data) {
-          this.setData(response.data)
-          this.$notify({
-            title: '加载价目表成功',
-            message: '已查询到本网点设置的服务价格',
-            type: 'success',
-            duration: 2000
-          })
-        } else {
-          this.$notify({
-            title: '暂无预设价格',
-            message: '请设置此网点的服务价格',
-            type: 'success',
-            duration: 2000
-          })
-        }
-      })
+      if (this.selected_branch_uid.length > 0) {
+        getTariff(this.selected_branch_uid[0]).then(response => {
+          if (response.data) {
+            this.setData(response.data)
+            this.$notify({
+              title: '加载成功',
+              message: '已查询到本网点单价',
+              type: 'success',
+              duration: 2000
+            })
+          } else {
+            this.$notify({
+              title: '暂无价格',
+              message: '请设置此网点的服务价格',
+              type: 'success',
+              duration: 2000
+            })
+          }
+        })
+      }
     },
 
     // 数据库信息填入表单

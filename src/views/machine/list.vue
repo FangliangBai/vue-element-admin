@@ -27,6 +27,17 @@
           :value="item.value"
         />
       </el-select>
+
+      <!-- 最后活动时间 -->
+      <el-select v-model="listQuery.active_time_interval" placeholder="最后活动时间" class="filter-item" clearable>
+        <el-option
+          v-for="item in activeTimeOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
+
       <el-button
         class="filter-item"
         type="primary"
@@ -102,11 +113,21 @@ export default {
         { field_name: 'machine_name', label: '设备名称' },
         { field_name: 'branch_name', label: '网点名称' },
         { field_name: 'machine_status', label: '设备状态' },
+        { field_name: 'last_active_time', label: '最后活动时间' },
         { field_name: 'address', label: '地址' }
       ],
       statusOptions: [
         { value: '启用', label: '启用' },
-        { value: '离线', label: '离线' }
+        { value: '故障', label: '故障' },
+        { value: '未注册', label: '未注册' },
+        { value: '离线', label: '离线' },
+        { value: '维修', label: '维修' },
+        { value: '运行中', label: '运行中' }
+      ],
+      activeTimeOptions: [
+        { value: '7', label: '一周前' },
+        { value: '30', label: '一个月前' },
+        { value: '90', label: '三个月前' }
       ],
       show_action: true, // 显示操作列
       /**

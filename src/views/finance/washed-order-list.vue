@@ -67,6 +67,7 @@
       :data="list"
       fit
       highlight-current-row
+      show-summary
       style="width: 100%;"
       @sort-change="handleSortChange"
     >

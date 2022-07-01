@@ -67,11 +67,11 @@
                   </el-form-item>
                 </el-col>
               </el-row>
-              <!-- 第 4 行 -->
+              <!-- 第 4 行 负责人 & 网点缩略图 -->
               <el-row>
                 <el-col :span="10">
-                  <el-form-item label-width="60px" prop="manager_name" label="负责人" class="postInfo-container-item">
-                    <el-select v-model="postForm.manager_name" placeholder="请选择" style="width: 100%;">
+                  <el-form-item label-width="60px" prop="managers" label="负责人" class="postInfo-container-item">
+                    <el-select v-model="postForm.managers" placeholder="请选择" style="width: 100%;" multiple>
                       <el-option
                         v-for="item in managerOptions"
                         :key="item.value"
@@ -79,6 +79,23 @@
                         :value="item.value"
                       />
                     </el-select>
+                  </el-form-item>
+                </el-col>
+                <el-col :span="10">
+                  <el-form-item label-width="100px" prop="thumbnail" label="网点缩略图" class="postInfo-container-item">
+                    <el-upload
+                      ref="upload"
+                      :action="thumbnailUploadUrl"
+                      :file-list="thumbnailList"
+                      :data="postForm"
+                      accept="image/jpeg,image/png"
+                      :limit="1"
+                      :multiple="false"
+                      :auto-upload="false"
+                    >
+                      <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
+                      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                    </el-upload>
                   </el-form-item>
                 </el-col>
               </el-row>
@@ -114,7 +131,7 @@ const defaultForm = {
   longitude: '',
   latitude: '',
   address: '',
-  manager_name: ''
+  managers: []
 }
 
 export default {
@@ -154,8 +171,7 @@ export default {
         branch_name: [{ validator: validateRequire }],
         longitude: [{ validator: validateRequire }],
         latitude: [{ validator: validateRequire }],
-        address: [{ validator: validateRequire }],
-        manager_name: [{ validator: validateRequire }]
+        address: [{ validator: validateRequire }]
       },
       /**
        * 表单项的下拉菜单选项
@@ -168,7 +184,11 @@ export default {
       regions: regionData,
       selectedRegionsCode: [],
       regionKey: ['province', 'city', 'area'],
-      selectedRegionsText: {}
+      selectedRegionsText: {},
+
+      // 网点缩略图
+      thumbnailUploadUrl: `${process.env.VUE_APP_BASE_API}/device-api/upload-thumbnail`,
+      thumbnailList: []
     }
   },
   computed: {},
@@ -192,6 +212,7 @@ export default {
       })
     },
     setData(data) {
+      console.log('data', data)
       const {
         branch_uid,
         branch_name,
@@ -206,7 +227,7 @@ export default {
         longitude,
         latitude,
         address,
-        manager_name
+        managers: manager_name.managers
       }
 
       // 设置省市区的下拉菜单选项
@@ -218,7 +239,8 @@ export default {
     },
     setOptions() {
       getBranchOptions().then(result => {
-        [this.managerOptions] = result.data
+        this.managerOptions = result.data
+        console.log(this.managerOptions)
       })
     },
     submitForm() {
@@ -238,6 +260,10 @@ export default {
            */
           if (!this.isEdit) { // 添加数据
             createBranch(branch).then(() => {
+              // 上传网点缩略图
+              this.$refs.upload.submit()
+
+              // 更新页面状态
               this.loading = false
               this.$notify({
                 title: '创建成功',
@@ -250,6 +276,10 @@ export default {
             })
           } else { // 更新数据
             updateBranch(branch).then(() => {
+              // 上传网点缩略图
+              this.$refs.upload.submit()
+
+              // 更新页面状态
               this.loading = false
               this.$notify({
                 title: '更新成功',

@@ -36,6 +36,7 @@
                     <el-select
                       v-model="postForm.branch_uid"
                       placeholder="请选择"
+                      clearable
                       style="width:100%"
                     >
                       <el-option
@@ -97,12 +98,12 @@ import { regionData, CodeToText, TextToCode } from 'element-china-area-data'
 import { createMachine, getMachineOptions, getMachineById, updateMachine } from '@/api/machine'
 
 const defaultForm = {
-  machine_uid: '',
-  machine_name: '',
-  branch_uid: '',
-  branch_name: '',
-  machine_status: '',
-  address: ''
+  machine_uid: null,
+  machine_name: null,
+  branch_uid: null,
+  branch_name: null,
+  machine_status: null,
+  address: null
 }
 
 export default {

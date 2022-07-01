@@ -93,7 +93,7 @@ export default {
       tableHead: [
         { field_name: 'branch_uid', label: '网点编号' },
         { field_name: 'branch_name', label: '网点名称' },
-        { field_name: 'manager_name', label: '负责人' },
+        // { field_name: 'manager_name', label: '负责人' },
         { field_name: 'longitude', label: '经度' },
         { field_name: 'latitude', label: '纬度' },
         { field_name: 'province', label: '省级区' },

@@ -13,6 +13,15 @@
         clearable
         style="margin-left: 10px; vertical-align: top;"
       />
+      <!-- 用户手机号 -->
+      <txt class="filter-item">用户手机号</txt>
+      <el-input
+        v-model="listQuery.customer_phone"
+        clearable
+        placeholder="手机号"
+        style="width: 200px;"
+        class="filter-item"
+      />
       <el-button
         class="filter-item"
         type="primary"

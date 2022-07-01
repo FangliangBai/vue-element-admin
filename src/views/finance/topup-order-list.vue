@@ -43,7 +43,7 @@
       </el-button>
     </div>
     <!-- 搜索结果列表 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row style="width: 100%;">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row show-summary style="width: 100%;">
       <template v-for="(item, index) in tableHead">
         <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
       </template>
