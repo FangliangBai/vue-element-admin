@@ -35,7 +35,7 @@
                   <el-form-item label-width="60px" prop="branch_name" label="网点" class="postInfo-container-item">
                     <el-select
                       v-model="postForm.branch_uid"
-                      placeholder="请选择"
+                      placeholder="请选择网点, 若还未确定可空余"
                       clearable
                       style="width:100%"
                     >
