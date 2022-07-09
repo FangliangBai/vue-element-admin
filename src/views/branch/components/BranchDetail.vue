@@ -88,13 +88,13 @@
                       :action="thumbnailUploadUrl"
                       :file-list="thumbnailList"
                       :data="postForm"
-                      accept="image/jpeg,image/png"
+                      accept="image/png"
                       :limit="1"
                       :multiple="false"
                       :auto-upload="false"
                     >
                       <el-button slot="trigger" size="small" type="primary">选取文件</el-button>
-                      <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过500kb</div>
+                      <div slot="tip" class="el-upload__tip">只能上传png文件. 图片宽高为 320x240, 且不超过200KB</div>
                     </el-upload>
                   </el-form-item>
                 </el-col>
