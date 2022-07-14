@@ -108,21 +108,15 @@
 </template>
 
 <script>
-/**
- * 第三方包
- */
+// 第三方包
 import { v1 as uuid_v1 } from 'uuid'
 import { regionData, CodeToText, TextToCode } from 'element-china-area-data'
 
-/**
- * 组件
- */
+// 组件
 import MDinput from '@/components/MDinput'
 import Sticky from '@/components/Sticky' // 粘性header组件
 
-/**
- * API
- */
+// API
 import { createBranch, getBranchById, updateBranch, getBranchOptions } from '@/api/branch'
 
 const defaultForm = {
@@ -251,8 +245,14 @@ export default {
           /**
            * Assemble branch data
            */
+          // 数据预处理
           const branch = Object.assign({}, this.postForm)
           branch['region'] = this.selectedRegionsText
+          // 检查 managers 是否为空
+          if (branch.managers.length === 1 && branch.managers[0] === '') {
+            branch.managers = []
+          }
+
           console.log(branch)
 
           /**
