@@ -48,6 +48,7 @@
 
       <!-- 充值设定 -->
       <aside>充值设定</aside>
+      注意: 所有充值选项均需要设定, 否则无法正常生效.
 
       <el-divider><i class="el-icon-coin" /> 充值设定 - 洗车币 (元) </el-divider>
       <el-row>
@@ -272,7 +273,8 @@ export default {
     // 根据选择网点, 获取相应充值定价
     getTariff() {
       getTopupTariff(this.selected_branch_uid).then(response => {
-        if (response.data) {
+        this.TopupTariff = response.data
+        if (response.msg === '获取列表成功') {
           this.TopupTariff = response.data
           this.$notify({
             title: '获取成功',
@@ -283,8 +285,8 @@ export default {
         } else {
           this.$notify({
             title: '该网点暂无充值定价',
-            message: '请设置此网点的服务价格',
-            type: 'success',
+            message: '返回预设定价模板',
+            type: 'info',
             duration: 2000
           })
         }
