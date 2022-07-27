@@ -275,7 +275,6 @@ export default {
       getTopupTariff(this.selected_branch_uid).then(response => {
         this.TopupTariff = response.data
         if (response.msg === '获取列表成功') {
-          this.TopupTariff = response.data
           this.$notify({
             title: '获取成功',
             message: '已获取到该网点的充值定价表',
