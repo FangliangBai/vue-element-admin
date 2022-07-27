@@ -311,7 +311,7 @@ export default {
       if (this.selected_branch_uid.length > 0) {
         getTariff(this.selected_branch_uid[0]).then(response => {
           this.setData(response.data)
-          if (response.msg === "获取列表成功") {
+          if (response.msg === '获取列表成功') {
             this.$notify({
               title: '加载成功',
               message: '已查询到本网点单价',
@@ -321,7 +321,7 @@ export default {
           } else {
             this.$notify({
               title: '暂无价格',
-              message: '返回预设定价模板,
+              message: '返回预设定价模板',
               type: 'info',
               duration: 2000
             })
