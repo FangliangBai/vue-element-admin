@@ -438,6 +438,28 @@ export const asyncRoutes = [
     ]
   },
 
+  /**
+   * 用户管理
+   */
+  {
+    name: 'CustomerManage',
+    path: '/customer-manage',
+    component: Layout,
+    meta: {
+      title: '用户管理',
+      icon: 'el-icon-s-order'
+    },
+    children: [
+      // 手动充值记录
+      {
+        name: 'ManualTopup',
+        path: '/customer-manage/manual-topup',
+        component: () => import('@/views/customer-manage/manual-topup'),
+        meta: { title: '人工充值', icon: 'el-icon-money', roles: ['admin'], noCache: true }
+      }
+    ]
+  },
+
   // 大屏展示
   {
     path: 'external-link',
