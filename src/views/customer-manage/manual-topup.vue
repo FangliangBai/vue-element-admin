@@ -55,13 +55,17 @@
       highlight-current-row
       style="width: 100%;"
     >
+      <!-- 数据列 -->
       <template v-for="(item, index) in tableHead">
-        <el-table-column
-          :key="index"
-          :prop="item.field_name"
-          :label="item.label"
-          align="center"
-        />
+        <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
+      </template>
+      <!-- 操作列 -->
+      <template>
+        <el-table-column label="操作" width="120" align="center" fixed="right">
+          <template slot-scope="{ row }">
+            <el-button icon="el-icon-delete" style="margin-left:20px; color:#f56c6c" circle @click="handleDelete(row)" />
+          </template>
+        </el-table-column>
       </template>
     </el-table>
 
@@ -139,7 +143,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
-import { getCustomerList, listManualTopup, createManualTopup } from '@/api/customer-manage'
+import { getCustomerList, listManualTopup, createManualTopup, deleteManualTopup } from '@/api/customer-manage'
 
 export default {
   name: 'ManualTopup',
@@ -251,6 +255,29 @@ export default {
     handleFilter() {
       this.listQuery.page = 1
       this.refresh()
+    },
+
+    // 删除充值操作
+    handleDelete(row) {
+      deleteManualTopup(row).then(res => {
+        if (res.msg === '用户余额不足，无法操作') {
+          this.$notify({
+            title: '操作失败',
+            message: '用户余额不足，无法操作',
+            type: 'warning',
+            duration: 2000
+          })
+          this.getList()
+        } else {
+          this.$notify({
+            title: '操作成功',
+            message: res.msg,
+            type: 'success',
+            duration: 2000
+          })
+          this.getList()
+        }
+      })
     },
 
     // 点击新增充值记录

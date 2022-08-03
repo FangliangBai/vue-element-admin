@@ -28,3 +28,12 @@ export function createManualTopup(topupForm) {
     data: topupForm
   })
 }
+
+// 删除手动充值记录
+export function deleteManualTopup(row) {
+  return request({
+    url: '/customer-manage/revoke-manual-topup',
+    method: 'post',
+    data: row
+  })
+}

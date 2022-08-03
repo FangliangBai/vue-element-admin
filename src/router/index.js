@@ -438,9 +438,7 @@ export const asyncRoutes = [
     ]
   },
 
-  /**
-   * 用户管理
-   */
+  // 用户管理
   {
     name: 'CustomerManage',
     path: '/customer-manage',
