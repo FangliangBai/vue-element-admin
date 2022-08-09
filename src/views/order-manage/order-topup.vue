@@ -69,6 +69,7 @@
       show-summary
       style="width: 100%;"
     >
+      <!-- 数据列 -->
       <template v-for="(item, index) in tableHead">
         <el-table-column
           :key="index"
@@ -76,6 +77,16 @@
           :label="item.label"
           align="center"
         />
+      </template>
+      <!-- 操作列 -->
+      <template>
+        <el-table-column label="操作" width="100" fixed="right">
+          <template slot-scope="{ row }">
+            <div v-if="row.topup_type === '洗车币'">
+              <el-button size="mini" type="danger" @click="handleRefund(row)">退款</el-button>
+            </div>
+          </template>
+        </el-table-column>
       </template>
     </el-table>
     <!-- 分页组件 -->
@@ -91,7 +102,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
-import { ListOrderTopup } from '@/api/order-manage'
+import { ListOrderTopup, refundTopup } from '@/api/order-manage'
 
 export default {
   name: 'OrderTopup',
@@ -296,6 +307,28 @@ export default {
       } else {
         return row[column.property]
       }
+    },
+
+    // 充值退款
+    handleRefund(row) {
+      refundTopup(row).then(res => {
+        if (res.msg === '退款成功') {
+          this.$notify({
+            title: '操作成功',
+            message: res.msg,
+            type: 'success',
+            duration: 2000
+          })
+        } else {
+          this.$notify({
+            title: '操作失败',
+            message: '抱歉，无法进行操作',
+            type: 'warning',
+            duration: 2000
+          })
+        }
+        this.getList()
+      })
     }
   }
 }

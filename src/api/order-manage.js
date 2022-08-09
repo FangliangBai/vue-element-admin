@@ -25,6 +25,15 @@ export function ListOrderRefund(query) {
   })
 }
 
+// 退款
+export function refundTopup(row) {
+  return request({
+    url: '/order-manage/refund-coin-topup',
+    method: 'post',
+    data: row
+  })
+}
+
 // 洗车订单查询
 export function ListOrderWashed(query) {
   return request({
