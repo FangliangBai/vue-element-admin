@@ -61,9 +61,9 @@
       </template>
       <!-- 操作列 -->
       <template>
-        <el-table-column label="操作" width="120" align="center" fixed="right">
+        <el-table-column label="操作" width="120" fixed="right">
           <template slot-scope="{ row }">
-            <el-button icon="el-icon-delete" style="margin-left:20px; color:#f56c6c" circle @click="handleDelete(row)" />
+            <el-button size="mini" type="danger" @click="handleDelete(row)">撤销</el-button>
           </template>
         </el-table-column>
       </template>
