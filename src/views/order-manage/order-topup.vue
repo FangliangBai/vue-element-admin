@@ -313,19 +313,11 @@ export default {
     handleRefund(row) {
       refundTopup(row).then(res => {
         if (res.msg === '退款成功') {
-          this.$notify({
-            title: '操作成功',
-            message: res.msg,
-            type: 'success',
-            duration: 2000
-          })
+          this.$notify({ title: '操作成功', message: res.msg, type: 'success' })
+        } else if (res.msg === '退款失败') {
+          this.$notify({ title: '无法退款', message: res.data, type: 'error' })
         } else {
-          this.$notify({
-            title: '操作失败',
-            message: '抱歉，无法进行操作',
-            type: 'warning',
-            duration: 2000
-          })
+          this.$notify({ title: '操作失败', message: '抱歉，无法进行操作', type: 'warning' })
         }
         this.getList()
       })
