@@ -37,6 +37,7 @@
                       v-model="postForm.branch_uid"
                       placeholder="请选择网点, 若还未确定可空余"
                       clearable
+                      filterable
                       style="width:100%"
                     >
                       <el-option
