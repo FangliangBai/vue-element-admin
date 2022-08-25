@@ -16,6 +16,14 @@ export function ListOrderTopup(query) {
   })
 }
 
+// 导出充值订单
+export function ExportOrderTopup(query) {
+  return request({
+    url: '/order-manage/export-order-topup',
+    method: 'get'
+  })
+}
+
 // 充值订单查询
 export function ListOrderRefund(query) {
   return request({
