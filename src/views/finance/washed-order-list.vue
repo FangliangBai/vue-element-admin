@@ -202,12 +202,6 @@ export default {
           case 'branch_name':
             this.tableHead = washedNumGroupByBranch.tableHead
             break
-          case 'city_code':
-            this.tableHead = washedNumGroupByCityCode.tableHead
-            break
-          case 'all':
-            this.tableHead = washedAll.tableHead
-            break
           default:
             this.tableHead = washedNumGroupByMachine.tableHead
         }
