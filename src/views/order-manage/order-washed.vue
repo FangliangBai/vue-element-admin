@@ -153,7 +153,7 @@
 
 <script>
 import Pagination from '@/components/Pagination'
-import { ListOrderWashed } from '@/api/order-manage'
+import { ExportOrderWashed, ListOrderWashed } from '@/api/order-manage'
 
 export default {
   name: 'OrderWashed',
@@ -266,29 +266,33 @@ export default {
      */
     handleDownload() {
       this.listLoading = true
-      import('@/vendor/Export2Excel').then(excel => {
-        // Excel 显示表头
-        const tHeader = []
-        this.tableHead.forEach(item => {
-          tHeader.push(item.label)
+
+      ExportOrderWashed(this.listQuery).then(response => {
+        const { data: list } = response
+
+        import('@/vendor/Export2Excel').then(excel => {
+          // Excel 显示表头
+          const tHeader = []
+          this.tableHead.forEach(item => {
+            tHeader.push(item.label)
+          })
+          // 数据解析表头
+          const parseHeader = []
+          this.tableHead.forEach(item => {
+            parseHeader.push(item.field_name)
+          })
+          // 解析、格式化表头与数据
+          const data = this.formatJson(parseHeader, list)
+          // 导出数据
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: '小微自助洗车-洗车记录',
+            autoWidth: true,
+            bookType: 'xlsx'
+          })
+          this.listLoading = false
         })
-        // 数据解析表头
-        const parseHeader = []
-        this.tableHead.forEach(item => {
-          parseHeader.push(item.field_name)
-        })
-        const list = this.list
-        // 解析、格式化表头与数据
-        const data = this.formatJson(parseHeader, list)
-        // 导出数据
-        excel.export_json_to_excel({
-          header: tHeader,
-          data,
-          filename: '',
-          autoWidth: true,
-          bookType: 'xlsx'
-        })
-        this.listLoading = false
       })
     },
 

@@ -162,6 +162,15 @@ export function listCustomer(query) {
   })
 }
 
+// 导出客户信息
+export function ExportCustomer(query) {
+  return request({
+    url: '/finance/export-customer',
+    method: 'get',
+    params: query
+  })
+}
+
 /**
  * 运营统计
  */
@@ -174,10 +183,28 @@ export function listWashedOrder(query) {
   })
 }
 
+// 导出消费统计
+export function ExportSummaryWashed(query) {
+  return request({
+    url: '/finance/export-summary-washed',
+    method: 'get',
+    params: query
+  })
+}
+
 export function ListTopupOrder(query) {
   return request({
     url: '/finance/list-topup-order',
     method: 'post',
     data: query
+  })
+}
+
+// 导出充值统计
+export function ExportSummaryTopup(query) {
+  return request({
+    url: '/finance/export-summary-topup',
+    method: 'get',
+    params: query
   })
 }

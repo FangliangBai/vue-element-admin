@@ -20,11 +20,12 @@ export function ListOrderTopup(query) {
 export function ExportOrderTopup(query) {
   return request({
     url: '/order-manage/export-order-topup',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }
 
-// 充值订单查询
+// 退款订单查询
 export function ListOrderRefund(query) {
   return request({
     url: '/order-manage/list-order-refund',
@@ -33,7 +34,16 @@ export function ListOrderRefund(query) {
   })
 }
 
-// 退款
+// 导出退款订单
+export function ExportOrderRefund(query) {
+  return request({
+    url: '/order-manage/export-order-refund',
+    method: 'get',
+    params: query
+  })
+}
+
+// 洗车币退款
 export function refundTopup(row) {
   return request({
     url: '/order-manage/refund-coin-topup',
@@ -46,6 +56,15 @@ export function refundTopup(row) {
 export function ListOrderWashed(query) {
   return request({
     url: '/order-manage/list-order-washed',
+    method: 'get',
+    params: query
+  })
+}
+
+// 导出洗车订单
+export function ExportOrderWashed(query) {
+  return request({
+    url: '/order-manage/export-order-washed',
     method: 'get',
     params: query
   })

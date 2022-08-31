@@ -234,7 +234,7 @@ export default {
     handleDownload() {
       this.listLoading = true
 
-      ExportOrderTopup().then(response => {
+      ExportOrderTopup(this.listQuery).then(response => {
         const { data: list } = response
 
         import('@/vendor/Export2Excel').then(excel => {
