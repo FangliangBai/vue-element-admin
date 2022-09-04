@@ -42,7 +42,7 @@
       </el-button>
     </div>
     <!-- 搜索结果列表 -->
-    <el-table :key="tableKey" v-loading="listLoading" :data="list" border fit highlight-current-row style="width: 100%;">
+    <el-table :key="tableKey" v-loading="listLoading" :data="list" fit highlight-current-row style="width: 100%;">
       <template v-for="(item, index) in tableHead">
         <el-table-column :key="index" :prop="item.field_name" :label="item.label" align="center" />
       </template>
@@ -84,7 +84,7 @@ export default {
         { field_name: 'customer_phone', label: '手机号' },
         { field_name: 'customer_plate', label: '车牌号' },
         { field_name: 'car_type', label: '车型' },
-        { field_name: 'customer_tier', label: '用户等级' },
+        { field_name: 'member_branch', label: '网点归属' },
         { field_name: 'topup_rmb', label: '累计充值人民币总额' },
         { field_name: 'topup_coin', label: '累计充值洗车币总额' },
         { field_name: 'topup_coin_bonus', label: '累计附赠洗车币总额' },
