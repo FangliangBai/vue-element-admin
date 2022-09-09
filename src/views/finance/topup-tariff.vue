@@ -2,26 +2,13 @@
   <div class="createPost-container">
 
     <!-- 吸顶按钮组 -->
-    <sticky
-      :z-index="1"
-      :class-name="'sub-navbar '+'published'"
-    >
-      <el-button
-        v-loading="loading"
-        icon="el-icon-success"
-        style="margin-left: 10px;"
-        type="success"
-        @click="submitForm"
-      >
+    <sticky :z-index="1" :class-name="'sub-navbar '+'published'">
+      <el-button v-loading="loading" icon="el-icon-success" style="margin-left: 10px;" type="success" @click="submitForm">
         设定
       </el-button>
     </sticky>
 
-    <el-form
-      ref="elForm"
-      :model="TopupTariff"
-      class="createPost-main-container"
-    >
+    <el-form ref="elForm" :model="TopupTariff" class="createPost-main-container">
 
       <!-- 网点选择 -->
       <aside>定价网点</aside>
@@ -35,6 +22,7 @@
         placeholder="请选择网点"
         clearable
         filterable
+        :disabled="updateAll"
         style="margin: 20px; width: 20%;"
         @change="getTariff()"
       >
@@ -45,6 +33,8 @@
           :value="item.branch_uid"
         />
       </el-select>
+
+      <el-checkbox v-model="updateAll" style="margin: 20px;">更新所有网点</el-checkbox>
 
       <!-- 充值设定 -->
       <aside>充值设定</aside>
@@ -225,6 +215,7 @@ export default {
       // 网点选择器
       branchOptions: [],
       selected_branch_uid: '',
+      updateAll: false,
 
       // ---- 业务数据 ----
       TopupTariff: {
@@ -296,14 +287,16 @@ export default {
     submitForm() {
       this.loading = true
 
-      // ---- 数据预处理 ----
+      /* 数据预处理 */
       // 对象转换
       const TopupTariff = Object.assign({}, this.TopupTariff)
-      //
+
       // TopupTariff 加上 branch_uid
       TopupTariff.branch_uid = this.selected_branch_uid
 
-      updateTopupTariff(TopupTariff).then(() => {
+      // 组装发送数据
+      const tariff = { TopupTariff, updateAll: this.updateAll }
+      updateTopupTariff(tariff).then(() => {
         this.loading = false
         this.$notify({
           title: '更新成功',
