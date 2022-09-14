@@ -47,6 +47,15 @@
       >
         查询
       </el-button>
+      <!--[按钮] 导出-->
+      <el-button
+        class="filter-item"
+        icon="el-icon-download"
+        style="margin-left: 10px"
+        @click="handleDownload"
+      >
+        导出
+      </el-button>
       <el-button
         class="filter-item"
         type="info"
@@ -89,7 +98,7 @@
 </template>
 
 <script>
-import { listMachine, deleteMachine } from '@/api/machine'
+import { listMachine, deleteMachine, ExportMachines } from '@/api/machine'
 import Pagination from '@/components/Pagination' // Secondary package based on el-pagination
 import { regionDataPlus } from 'element-china-area-data'
 
@@ -217,6 +226,46 @@ export default {
     },
     handleCreate() {
       this.$router.push(`/machine/create`)
+    },
+
+    // Excel 导出所有设备
+    handleDownload() {
+      this.listLoading = true
+      ExportMachines().then(response => {
+        const { data: list } = response
+        import('@/vendor/Export2Excel').then(excel => {
+          // Excel 显示表头
+          const tHeader = []
+          this.tableHead.forEach(item => {
+            tHeader.push(item.label)
+          })
+          // 数据解析表头
+          const parseHeader = []
+          this.tableHead.forEach(item => {
+            parseHeader.push(item.field_name)
+          })
+          // 解析、格式化表头与数据
+          const data = this.formatJson(parseHeader, list)
+          // 导出数据
+          excel.export_json_to_excel({
+            header: tHeader,
+            data,
+            filename: '小微自助洗车-设备列表',
+            autoWidth: true,
+            bookType: 'xlsx'
+          })
+          this.listLoading = false
+        })
+      })
+    },
+
+    // 数据导出格式化
+    formatJson(filterVal, jsonData) {
+      return jsonData.map(
+        v => filterVal.map(j => {
+          return v[j]
+        })
+      )
     }
   }
 }

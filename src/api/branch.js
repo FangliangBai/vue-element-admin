@@ -46,3 +46,10 @@ export function deleteBranch(branch_uid) {
     params: { branch_uid }
   })
 }
+
+export function ExportBranches() {
+  return request({
+    url: '/branch/export-branches',
+    method: 'get'
+  })
+}

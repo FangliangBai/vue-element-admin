@@ -46,3 +46,10 @@ export function deleteMachine(machine_uid) {
     params: { machine_uid }
   })
 }
+
+export function ExportMachines() {
+  return request({
+    url: '/machine/export-machines',
+    method: 'get'
+  })
+}
