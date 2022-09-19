@@ -167,7 +167,8 @@ export function ExportCustomer(query) {
   return request({
     url: '/finance/export-customer',
     method: 'get',
-    params: query
+    params: query,
+    timeout: 15000
   })
 }
 
