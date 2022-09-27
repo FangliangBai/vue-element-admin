@@ -150,6 +150,7 @@ const washedNumGroupByMachine = {
     { field_name: 'count', label: '洗车量' },
     { field_name: 'cost_rmb', label: '人民币消费' },
     { field_name: 'cost_coin', label: '洗车币消费' },
+    { field_name: 'cost_bonus', label: '赠币消费' },
     { field_name: 'cost_all', label: '总消费' }
   ]
 }
@@ -163,6 +164,7 @@ const washedNumGroupByBranch = {
     { field_name: 'count', label: '洗车量' },
     { field_name: 'cost_rmb', label: '人民币消费' },
     { field_name: 'cost_coin', label: '洗车币消费' },
+    { field_name: 'cost_bonus', label: '赠币消费' },
     { field_name: 'cost_all', label: '总消费' }
   ]
 }
