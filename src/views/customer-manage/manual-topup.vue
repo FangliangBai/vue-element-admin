@@ -100,7 +100,10 @@
                 placeholder="请选择用户手机号"
                 multiple
                 filterable
+                remote
+                :remote-method="getSelectOptions"
                 clearable
+                :loading="optionLoading"
                 :style="{width: '100%'}"
               >
                 <el-option
@@ -108,7 +111,6 @@
                   :key="index"
                   :label="item.label"
                   :value="item.value"
-                  :disabled="item.disabled"
                 />
               </el-select>
             </el-form-item>
@@ -191,6 +193,7 @@ export default {
       tableKey: 0, // 优化 Vue 渲染需要
       listLoading: true, // 表格 loading 动画
       dialogVisible: false, // 对话框状态
+      optionLoading: false, // 客户选项 loading 动画
 
       // 表头数据
       tableHead: [
@@ -281,11 +284,19 @@ export default {
     },
 
     // 点击新增充值记录
-    onClickCreate() {
-      this.dialogVisible = true
-      getCustomerList().then(res => {
-        this.customerList = res.data
-      })
+    onClickCreate() { this.dialogVisible = true },
+
+    // 远程查询客户信息
+    getSelectOptions(query) {
+      if (query !== '') {
+        this.optionLoading = true
+        getCustomerList({ phone: query }).then(res => {
+          this.customerList = res.data
+          this.optionLoading = false
+        })
+      } else {
+        this.customerList = []
+      }
     },
 
     // 点击确定添加按钮

@@ -13,10 +13,11 @@ export function listManualTopup(query) {
 }
 
 // 获取用户手机号码列表
-export function getCustomerList() {
+export function getCustomerList(query) {
   return request({
     url: '/customer-manage/get-customer-list',
-    method: 'get'
+    method: 'get',
+    params: query
   })
 }
 
