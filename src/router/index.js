@@ -298,9 +298,7 @@ export const asyncRoutes = [
     ]
   },
 
-  /**
-   * 财务管理
-   */
+  // 财务管理
   {
     name: 'finance',
     path: '/finance',
@@ -435,14 +433,28 @@ export const asyncRoutes = [
     name: 'CustomerManage',
     path: '/customer-manage',
     component: Layout,
-    meta: { title: '用户管理', icon: 'el-icon-s-order', roles: ['admin'] },
+    meta: { title: '用户管理', icon: 'el-icon-money', roles: ['admin'] },
     children: [
+      // 非管理员添加手动充值记录
+      {
+        name: 'ManualTopupCreate',
+        path: '/customer-manage/manual-topup-create',
+        component: () => import('@/views/customer-manage/manual-topup-create'),
+        meta: { title: '人工充值', icon: 'el-icon-circle-plus-outline', roles: ['manual-topup'], noCache: true }
+      },
       // 手动充值记录
       {
         name: 'ManualTopup',
         path: '/customer-manage/manual-topup',
         component: () => import('@/views/customer-manage/manual-topup'),
-        meta: { title: '人工充值', icon: 'el-icon-money', roles: ['admin'], noCache: true }
+        meta: { title: '充值记录', icon: 'el-icon-s-claim', roles: ['admin'], noCache: true }
+      },
+      // 审批手动充值记录
+      {
+        name: 'ManualTopupApproval',
+        path: '/customer-manage/manual-topup-approval',
+        component: () => import('@/views/customer-manage/manual-topup-approval'),
+        meta: { title: '充值审批', icon: 'el-icon-s-check', roles: ['admin'], noCache: true }
       }
     ]
   },

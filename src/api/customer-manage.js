@@ -38,3 +38,21 @@ export function deleteManualTopup(row) {
     data: row
   })
 }
+
+// 确认手动充值申请
+export function approveManualTopup(row) {
+  return request({
+    url: '/customer-manage/approve-manual-topup',
+    method: 'post',
+    data: row
+  })
+}
+
+// 撤销手动充值申请
+export function cancelManualTopup(row) {
+  return request({
+    url: '/customer-manage/cancel-manual-topup',
+    method: 'post',
+    data: row
+  })
+}

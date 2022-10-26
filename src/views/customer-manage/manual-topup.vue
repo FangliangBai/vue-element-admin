@@ -84,16 +84,16 @@
       :visible.sync="dialogVisible"
       width="50%"
     >
-      <el-row :gutter="40">
-        <el-form
-          ref="createForm"
-          :model="topupForm"
-          :rules="rules"
-          size="medium"
-          label-width="100px"
-          label-position="top"
-        >
-          <el-col :span="16">
+      <el-form
+        ref="createForm"
+        :model="topupForm"
+        :rules="rules"
+        size="medium"
+        label-width="100px"
+        label-position="top"
+      >
+        <el-row :gutter="40">
+          <el-col :span="17">
             <el-form-item label="用户手机号" prop="openidList">
               <el-select
                 v-model="topupForm.openidList"
@@ -115,11 +115,13 @@
               </el-select>
             </el-form-item>
           </el-col>
-          <el-col :span="8">
+          <el-col :span="7">
             <el-form-item label="洗车币充值金额" prop="topupCoin">
-              <el-input-number v-model="topupForm.topupCoin" placeholder="洗车币充值金额" :step="50" :min="1" />
+              <el-input-number v-model="topupForm.topupCoin" placeholder="洗车币充值金额" :step="50" :min="1" :style="{width: '100%'}" />
             </el-form-item>
           </el-col>
+        </el-row>
+        <el-row :gutter="40">
           <el-col :span="24">
             <el-form-item label="充值备注" prop="topupNote">
               <el-input
@@ -133,8 +135,8 @@
               />
             </el-form-item>
           </el-col>
-        </el-form>
-      </el-row>
+        </el-row>
+      </el-form>
       <span slot="footer" class="dialog-footer">
         <el-button @click="dialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="onClickSubmit">确 定</el-button>
@@ -303,6 +305,9 @@ export default {
     onClickSubmit() {
       this.$refs['createForm'].validate(valid => {
         if (!valid) return
+
+        // 提交表单增加状态
+        this.topupForm.topupStatus = 1 // 管理员充值直接加钱
         createManualTopup(this.topupForm).then(res => {
           if (res.code === 0) {
             this.$notify({
