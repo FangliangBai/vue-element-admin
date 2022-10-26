@@ -242,6 +242,7 @@ export default {
     // 请求表格数据, 赋值给组件 data
     getList() {
       this.listLoading = true
+      this.listQuery.topupStatus = 1 // 管理员充值直接加钱
       listManualTopup(this.listQuery).then(response => {
         const { data, total } = response
         this.list = data; this.total = total; this.listLoading = false
