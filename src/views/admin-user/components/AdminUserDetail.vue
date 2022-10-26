@@ -119,6 +119,10 @@ export default {
         }, {
           value: 'editor',
           label: '工作人员'
+        },
+        {
+          value: 'manual-topup',
+          label: '充值人员'
         }
       ],
       statusOptions: [
@@ -174,7 +178,7 @@ export default {
               this.loading = false
               this.$notify({
                 title: '创建成功',
-                message: '洗车机添加入数据库',
+                message: '管理人员添加入数据库',
                 type: 'success',
                 duration: 2000
               })
@@ -186,7 +190,7 @@ export default {
               this.loading = false
               this.$notify({
                 title: '更新成功',
-                message: '洗车机数据更新入数据库',
+                message: '数据更新入数据库',
                 type: 'success',
                 duration: 2000
               })

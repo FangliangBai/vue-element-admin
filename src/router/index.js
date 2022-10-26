@@ -433,7 +433,7 @@ export const asyncRoutes = [
     name: 'CustomerManage',
     path: '/customer-manage',
     component: Layout,
-    meta: { title: '用户管理', icon: 'el-icon-money', roles: ['admin'] },
+    meta: { title: '用户管理', icon: 'el-icon-money', roles: ['admin', 'manual-topup'] },
     children: [
       // 非管理员添加手动充值记录
       {
