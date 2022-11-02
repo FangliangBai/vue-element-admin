@@ -31,8 +31,20 @@
               </el-col>
             </el-row>
             <div class="postInfo-container">
-              <!-- 第 2 行 经度 纬度 -->
+              <!-- 第 2 行 网点状态、经度、纬度 -->
               <el-row>
+                <el-col :span="10">
+                  <el-form-item label-width="60px" prop="branch_status" label="状态" class="postInfo-container-item">
+                    <el-select v-model="postForm.branch_status" placeholder="请选择" style="width:100%">
+                      <el-option
+                        v-for="item in statusOptions"
+                        :key="item.status_id"
+                        :label="item.status_name"
+                        :value="item.status_name"
+                      />
+                    </el-select>
+                  </el-form-item>
+                </el-col>
                 <el-col :span="10">
                   <el-form-item label-width="60px" prop="longitude" label="经度" class="postInfo-container-item">
                     <el-input v-model="postForm.longitude" :rows="1" class="article-textarea" autosize placeholder="网点位置经度值" />
@@ -122,6 +134,7 @@ import { createBranch, getBranchById, updateBranch, getBranchOptions } from '@/a
 const defaultForm = {
   branch_uid: '',
   branch_name: '',
+  branch_status: '',
   longitude: '',
   latitude: '',
   address: '',
@@ -157,20 +170,24 @@ export default {
     return {
       postForm: Object.assign({}, defaultForm),
       loading: false,
+
       /**
        * 表单项验证规则
        */
       rules: {
         branch_uid: [{ validator: validateRequire }],
         branch_name: [{ validator: validateRequire }],
+        branch_status: [{ required: true, message: '请选择状态', trigger: 'blur' }],
         longitude: [{ validator: validateRequire }],
         latitude: [{ validator: validateRequire }],
         address: [{ validator: validateRequire }]
       },
+
       /**
        * 表单项的下拉菜单选项
        */
       managerOptions: [],
+      statusOptions: [],
 
       /**
        * 省市区的下拉菜单选项
@@ -233,8 +250,7 @@ export default {
     },
     setOptions() {
       getBranchOptions().then(result => {
-        this.managerOptions = result.data
-        console.log(this.managerOptions)
+        [this.statusOptions, this.managerOptions] = result.data
       })
     },
     submitForm() {
