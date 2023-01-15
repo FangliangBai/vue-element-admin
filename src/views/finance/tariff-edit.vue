@@ -15,7 +15,7 @@
       <!-- [选择器] 网点 -->
       <el-row>
         <el-col :span="8">
-          <el-form-item label="网点：" prop="branch" label-width="80px" style="margin-bottom: 20px; margin-right: 10px;">
+          <el-form-item label="网点：" prop="branch" label-width="80px" style="margin-right: 10px;">
             <el-select
               v-model="selected_branch_uid[0]"
               placeholder="请选择网点"
@@ -34,14 +34,15 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="16">
-          <el-form-item label="批量定价网点：" prop="branch-follow" label-width="120px" style="margin-bottom: 20px; margin-right: 10px;">
+        <el-col :span="12">
+          <el-form-item label="批量定价网点：" prop="branch-follow" label-width="120px" style="margin-right: 10px;">
             <el-select
               v-model="selected_branch_uid"
               placeholder="请选择跟设网点"
               clearable
               filterable
               multiple
+              :disabled="updateAll"
               style="margin-left: 10px; width: 95%;"
             >
               <el-option
@@ -52,6 +53,9 @@
               />
             </el-select>
           </el-form-item>
+        </el-col>
+        <el-col :span="4">
+          <el-checkbox v-model="updateAll" style="margin-top: 10px">更新所有网点</el-checkbox>
         </el-col>
       </el-row>
 
@@ -272,6 +276,7 @@ export default {
     return {
       postForm: Object.assign({}, defaultForm),
       loading: false,
+      updateAll: false,
 
       /**
        * 表单项验证规则
@@ -366,12 +371,12 @@ export default {
       this.$refs.postForm.validate(valid => {
         if (valid) {
           this.loading = true
-          const tariff = Object.assign({}, this.postForm)
+          const machine_tariff = Object.assign({}, this.postForm)
 
           // 更新前 Tariff 加上 branch_uid
-          tariff.branch_uid = this.selected_branch_uid
-
-          updateTariff(tariff).then(() => {
+          machine_tariff.branch_uid = this.selected_branch_uid
+          const updateInfo = { machine_tariff, updateAll: this.updateAll }
+          updateTariff(updateInfo).then(() => {
             this.loading = false
             this.$notify({
               title: '更新成功',
