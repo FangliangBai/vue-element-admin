@@ -56,3 +56,21 @@ export function cancelManualTopup(row) {
     data: row
   })
 }
+
+// 海威达迁移记录查询
+export function listHwdTransfer(query) {
+  return request({
+    url: '/customer-manage/list-hwd-transfer',
+    method: 'get',
+    params: query
+  })
+}
+
+// 提交清空一代账户余额
+export function resetHwdAccount(resetForm) {
+  return request({
+    url: '/customer-manage/reset-hwd-account',
+    method: 'post',
+    data: resetForm
+  })
+}

@@ -455,6 +455,12 @@ export const asyncRoutes = [
         path: '/customer-manage/manual-topup-approval',
         component: () => import('@/views/customer-manage/manual-topup-approval'),
         meta: { title: '充值审批', icon: 'el-icon-s-check', roles: ['admin'], noCache: true }
+      },
+      {
+        name: 'HwdTransfer',
+        path: '/customer-manage/hwd-transfer',
+        component: () => import('@/views/customer-manage/hwd-transfer'),
+        meta: { title: '用户迁移', icon: 'el-icon-document-copy', roles: ['admin'], noCache: true }
       }
     ]
   },
