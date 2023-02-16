@@ -8,7 +8,18 @@
         placeholder="请输入订单号"
         prefix-icon="el-icon-s-order"
         clearable
-        style="width: 150px;"
+        style="width: 200px;"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+        @clear="handleFilter"
+      />
+      <!--[输入框] 手机号-->
+      <el-input
+        v-model="listQuery.customer_phone"
+        placeholder="请输入手机号"
+        prefix-icon="el-icon-phone"
+        clearable
+        style="width: 160px;"
         class="filter-item"
         @keyup.enter.native="handleFilter"
         @clear="handleFilter"
