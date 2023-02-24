@@ -32,10 +32,10 @@
         <el-tabs v-model="activeTab" type="border-card">
           <el-tab-pane label="状态管理" name="状态管理">
             <el-form ref="branchStatusForm" :model="branchStatusData" :rules="branchStatusRules" label-width="100px">
-              <el-form-item label="下拉选择" prop="branchStatus">
+              <el-form-item label="状态选择" prop="branchStatus">
                 <el-select
                   v-model="branchStatusData.branchStatus"
-                  placeholder="请选择下拉选择"
+                  placeholder="请选择网点状态"
                   clearable
                   :style="{width: '100%'}"
                 >
