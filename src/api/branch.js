@@ -53,3 +53,11 @@ export function ExportBranches() {
     method: 'get'
   })
 }
+
+export function setBranchSettings(branchSettings) {
+  return request({
+    url: '/branch/branch-settings',
+    method: 'post',
+    data: branchSettings
+  })
+}

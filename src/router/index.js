@@ -294,6 +294,12 @@ export const asyncRoutes = [
         path: '/branch/list',
         component: () => import('@/views/branch/list'),
         meta: { title: '网点列表', icon: 'tree', roles: ['admin', 'editor'], noCache: true }
+      },
+      {
+        name: 'BatchSetting',
+        path: '/branch/batchSetting',
+        component: () => import('@/views/branch/batchSetting'),
+        meta: { title: '网点批设定', icon: 'el-icon-setting', roles: ['admin', 'editor'], noCache: true }
       }
     ]
   },

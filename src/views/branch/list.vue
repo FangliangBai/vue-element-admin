@@ -20,6 +20,20 @@
         clearable
         placeholder="设备所在区域"
       />
+      <!--[选择器] 网点状态-->
+      <el-select
+        v-model="listQuery.branch_status"
+        placeholder="请选择网点状态"
+        class="filter-item"
+        clearable
+      >
+        <el-option
+          v-for="item in branchStatusOptions"
+          :key="item.value"
+          :label="item.label"
+          :value="item.value"
+        />
+      </el-select>
       <!-- 按钮 -->
       <el-button
         class="filter-item"
@@ -112,7 +126,26 @@ export default {
       ],
       show_action: true, // 显示操作列
       // 市区的下拉菜单选项
-      regions: regionDataPlus
+      regions: regionDataPlus,
+      // [选择器] 充值类型
+      branchStatusOptions: [
+        {
+          label: '正常营业',
+          value: '正常营业'
+        },
+        {
+          label: '冬季营业',
+          value: '冬季营业'
+        },
+        {
+          label: '内部测试',
+          value: '内部测试'
+        },
+        {
+          label: '停止营业',
+          value: '停止营业'
+        }
+      ]
     }
   },
   created() {
