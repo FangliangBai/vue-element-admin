@@ -120,6 +120,8 @@ export default {
       tableHead: [
         { field_name: 'machine_uid', label: '设备编号' },
         { field_name: 'machine_name', label: '设备名称' },
+        { field_name: 'city', label: '城市' },
+        { field_name: 'area', label: '辖区' },
         { field_name: 'branch_name', label: '网点名称' },
         { field_name: 'machine_status', label: '设备状态' },
         { field_name: 'last_active_time', label: '最后活动时间' },
