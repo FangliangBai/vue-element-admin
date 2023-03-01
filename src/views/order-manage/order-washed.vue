@@ -24,6 +24,17 @@
         @keyup.enter.native="handleFilter"
         @clear="handleFilter"
       />
+      <!--[输入框] 用户手机号-->
+      <el-input
+        v-model="listQuery.customer_phone"
+        placeholder="请输入用户手机号"
+        prefix-icon="el-icon-phone"
+        clearable
+        style="width: 180px;"
+        class="filter-item"
+        @keyup.enter.native="handleFilter"
+        @clear="handleFilter"
+      />
       <!--[时间选择器] 洗车时段-->
       <el-date-picker
         v-model="listQuery.dateRange"
@@ -171,7 +182,6 @@ export default {
       tableKey: 0, // 优化 Vue 渲染需要
       // 表头数据
       tableHead: [
-        { field_name: 'order_uid', label: '订单号' },
         { field_name: 'customer_name', label: '用户名称' },
         { field_name: 'machine_uid', label: '设备号' },
         { field_name: 'balance_type', label: '支付类型' },
