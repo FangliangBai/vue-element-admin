@@ -78,9 +78,7 @@
       show-summary
       style="width: 100%;"
     >
-      <el-table-column
-        type="expand"
-      >
+      <el-table-column type="expand">
         <template slot-scope="props">
           <el-row :gutter="20">
             <el-col :span="12">
@@ -148,6 +146,7 @@
           :prop="item.field_name"
           :label="item.label"
           align="center"
+          :min-width="item.width"
         />
       </template>
     </el-table>
@@ -182,11 +181,11 @@ export default {
       tableKey: 0, // 优化 Vue 渲染需要
       // 表头数据
       tableHead: [
-        { field_name: 'customer_name', label: '用户名称' },
-        { field_name: 'machine_uid', label: '设备号' },
-        { field_name: 'balance_type', label: '支付类型' },
-        { field_name: 'order_time', label: '支付时间' },
-        { field_name: 'order_cost', label: '消费金额 (元)' }
+        { field_name: 'customer_name', label: '用户名称', width: 'auto' },
+        { field_name: 'machine_uid', label: '设备号', width: '150' },
+        { field_name: 'balance_type', label: '支付类型', width: 'auto' },
+        { field_name: 'order_time', label: '支付时间', width: 'auto' },
+        { field_name: 'order_cost', label: '消费金额 (元)', width: 'auto' }
       ],
       listLoading: true, // 表格 loading 动画
 
