@@ -213,6 +213,21 @@
           </el-form-item>
         </el-col>
       </el-row>
+
+      <el-divider><i class="el-icon-s-tools" /> 门禁系统设置 </el-divider>
+
+      <el-row>
+        <el-col :span="6">
+          <el-form-item label="超时单价：" prop="price_park" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.price_park" placeholder="分/秒" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="免费时长：" prop="free_park_time" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.free_park_time" placeholder="秒" />
+          </el-form-item>
+        </el-col>
+      </el-row>
     </el-form>
 
   </div>
@@ -249,7 +264,9 @@ const defaultForm = {
   time_limit_blower: '',
   time_limit_dryer: '',
   time_limit_tap: '',
-  time_limit_pause: ''
+  time_limit_pause: '',
+  price_park: '',
+  free_park_time: ''
 }
 
 export default {
@@ -362,7 +379,9 @@ export default {
         time_limit_blower: data.time_limit_blower,
         time_limit_dryer: data.time_limit_dryer,
         time_limit_tap: data.time_limit_tap,
-        time_limit_pause: data.time_limit_pause
+        time_limit_pause: data.time_limit_pause,
+        price_park: data.price_park,
+        free_park_time: data.free_park_time
       }
     },
 
@@ -401,3 +420,24 @@ export default {
   }
 }
 </script>
+
+<style lang="scss" scoped>
+@import "~@/styles/mixin.scss";
+
+.createPost-container {
+  position: relative;
+
+  .createPost-main-container {
+    padding: 40px 45px 20px 50px;
+
+    .preview-img {
+      width: 200px;
+      height: 270px;
+    }
+
+    .contents-wrapper {
+      padding: 5px 0;
+    }
+  }
+}
+</style>

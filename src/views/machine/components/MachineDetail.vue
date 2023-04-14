@@ -80,6 +80,19 @@
                   </el-form-item>
                 </el-col>
               </el-row>
+              <!-- 第 4 行 -->
+              <el-row>
+                <el-col :span="2">
+                  <el-form-item label-width="60px" prop="roll_door" label="闸门" class="postInfo-container-item">
+                    <el-checkbox v-model="postForm.roll_door" />
+                  </el-form-item>
+                </el-col>
+                <el-col :span="2">
+                  <el-form-item label-width="60px" prop="park_lock" label="地锁" class="postInfo-container-item">
+                    <el-checkbox v-model="postForm.park_lock" />
+                  </el-form-item>
+                </el-col>
+              </el-row>
             </div>
           </el-col>
         </el-row>
@@ -104,7 +117,9 @@ const defaultForm = {
   branch_uid: null,
   branch_name: null,
   machine_status: null,
-  address: null
+  address: null,
+  roll_door: false,
+  park_lock: false
 }
 
 export default {
@@ -165,10 +180,9 @@ export default {
      * 获取洗车机数据
      * @param {String} machine_uid 洗车机唯一标识
      */
-    getMachineData(machine_uid) {
-      getMachineById(machine_uid).then(response => {
-        this.setFormData(response.data)
-      })
+    async getMachineData(machine_uid) {
+      const response = await getMachineById(machine_uid)
+      this.setFormData(response.data)
     },
 
     /**
@@ -181,7 +195,9 @@ export default {
         branch_uid: data.branch_uid,
         branch_name: data.branch_name,
         machine_status: data.machine_status,
-        address: data.address
+        address: data.address,
+        roll_door: data.roll_door === 1,
+        park_lock: data.park_lock === 1
       }
       // 单独设置省市区的下拉菜单选项
       this.selectedRegionsCode = [
