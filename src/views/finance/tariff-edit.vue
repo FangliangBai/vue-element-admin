@@ -219,12 +219,17 @@
       <el-row>
         <el-col :span="6">
           <el-form-item label="超时单价：" prop="price_park" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
-            <el-input v-model="postForm.price_park" placeholder="分/秒" />
+            <el-input v-model="postForm.price_park" placeholder="单位: 分/秒" />
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="免费时长：" prop="free_park_time" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
-            <el-input v-model="postForm.free_park_time" placeholder="秒" />
+            <el-input v-model="postForm.free_park_time" placeholder="单位: 秒" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="扣费上限：" prop="max_cost" label-width="150px" style="margin-bottom: 20px; margin-right: 10px;">
+            <el-input v-model="postForm.max_cost" placeholder="单位: 分" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -266,7 +271,8 @@ const defaultForm = {
   time_limit_tap: '',
   time_limit_pause: '',
   price_park: '',
-  free_park_time: ''
+  free_park_time: '',
+  max_cost: ''
 }
 
 export default {
@@ -381,7 +387,8 @@ export default {
         time_limit_tap: data.time_limit_tap,
         time_limit_pause: data.time_limit_pause,
         price_park: data.price_park,
-        free_park_time: data.free_park_time
+        free_park_time: data.free_park_time,
+        max_cost: data.max_cost
       }
     },
 

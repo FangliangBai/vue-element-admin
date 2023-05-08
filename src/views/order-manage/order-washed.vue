@@ -81,7 +81,7 @@
       <el-table-column type="expand">
         <template slot-scope="props">
           <el-row :gutter="20">
-            <el-col :span="12">
+            <el-col :span="9">
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-form-item label="冲水时长: ">
                   <span>{{ props.row.service_time.water }} 秒</span>
@@ -109,7 +109,7 @@
                 </el-form-item>
               </el-form>
             </el-col>
-            <el-col :span="12">
+            <el-col :span="9">
               <el-form label-position="left" inline class="demo-table-expand">
                 <el-form-item label="冲水消费: ">
                   <span>{{ props.row.service_cost.water }} 元</span>
@@ -134,6 +134,13 @@
                 </el-form-item>
                 <el-form-item label="水龙头消费: ">
                   <span>{{ props.row.service_cost.tap }} 元</span>
+                </el-form-item>
+              </el-form>
+            </el-col>
+            <el-col :span="6">
+              <el-form label-position="left" inline class="demo-table-expand">
+                <el-form-item label="停车消费: ">
+                  <span>{{ props.row.cost_park }} 元</span>
                 </el-form-item>
               </el-form>
             </el-col>
@@ -334,6 +341,7 @@ export default {
               return prev
             }
           }, 0)
+          sums[index] = sums[index].toFixed(2)
           sums[index] += ' 元'
         } else {
           sums[index] = '-'
