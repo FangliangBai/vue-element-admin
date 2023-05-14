@@ -430,6 +430,13 @@ export const asyncRoutes = [
         path: '/order-manage/order-washed',
         component: () => import('@/views/order-manage/order-washed'),
         meta: { title: '洗车订单', icon: 'el-icon-s-claim', roles: ['admin', 'editor'], noCache: true }
+      },
+      // 停车订单
+      {
+        name: 'OrderPark',
+        path: '/order-manage/order-park',
+        component: () => import('@/views/order-manage/order-park'),
+        meta: { title: '停车订单', icon: 'el-icon-timer', roles: ['admin'], noCache: true }
       }
     ]
   },

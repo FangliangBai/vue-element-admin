@@ -69,3 +69,19 @@ export function ExportOrderWashed(query) {
     params: query
   })
 }
+
+export function ListOrderPark(query) {
+  return request({
+    url: '/order-manage/list-order-park',
+    method: 'get',
+    params: query
+  })
+}
+
+export function deleteOrderPark(row) {
+  return request({
+    url: '/order-manage/delete-order-park',
+    method: 'post',
+    data: row
+  })
+}

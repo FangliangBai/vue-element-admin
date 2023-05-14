@@ -142,6 +142,9 @@
                 <el-form-item label="停车消费: ">
                   <span>{{ props.row.cost_park }} 元</span>
                 </el-form-item>
+                <el-form-item label="停车时长: ">
+                  <span>{{ props.row.park_time_used }} 分</span>
+                </el-form-item>
               </el-form>
             </el-col>
           </el-row>
