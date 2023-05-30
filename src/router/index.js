@@ -478,6 +478,23 @@ export const asyncRoutes = [
     ]
   },
 
+  // 合作商管理
+  {
+    name: 'PartnerManage',
+    path: '/partner-manage',
+    component: Layout,
+    meta: { title: '合作商管理', icon: 'el-icon-s-shop', roles: ['admin'] },
+    children: [
+      // 合作商列表
+      {
+        name: 'PartnerTopupList',
+        path: '/partner-manage/partner-topup-list',
+        component: () => import('@/views/partner-manage/partner-topup-list'),
+        meta: { title: '合作商列表', icon: 'el-icon-s-shop', roles: ['admin'], noCache: true }
+      }
+    ]
+  },
+
   // 大屏展示
   {
     path: 'external-link',
